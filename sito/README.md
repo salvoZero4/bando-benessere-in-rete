@@ -12,7 +12,7 @@ installazione, server, account o connessione internet.
 
 - `index.html`: contenuto e struttura semantica;
 - `css/styles.css`: design system, responsive design e modalità accessibili;
-- `js/data.js`: dati dimostrativi separati dal layout;
+- `js/data.js`: dati territoriali verificati separati dal layout;
 - `js/app.js`: ricerca, filtri, menu mobile e simulazione CMS.
 
 ## Funzioni dimostrate
@@ -30,13 +30,13 @@ installazione, server, account o connessione internet.
 
 ## Nota sui contenuti
 
-Il layout, il codice e le illustrazioni vettoriali sono originali. Eventi,
-attività, schede di servizio e news sono contenuti dimostrativi, chiaramente
-segnalati nell'interfaccia. Prima di un'eventuale pubblicazione dovranno essere
-sostituiti o validati dalla Consulta e dagli uffici competenti.
+Il layout e il codice sono originali. Nomi, indirizzi e contatti provengono dal
+bando, dal Comune di Altavilla Milicia e dall'ASP Palermo. Gli orari e i dati
+non disponibili non sono stati inventati. Gli spazi fotografici saranno
+completati con materiali autorizzati della Consulta o del Comune.
 
 ## Aggiornamento dei dati
 
-Eventi, servizi e news si modificano in `js/data.js`. Questa separazione simula
-il modello dati che, in una fase successiva, potrebbe essere collegato a un CMS
-senza riprogettare l'interfaccia.
+Eventi, servizi e news si modificano in `js/data.js`. Questa separazione
+costituisce il modello dati che, in una fase successiva, potrebbe essere
+collegato a un CMS senza riprogettare l'interfaccia.

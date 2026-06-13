@@ -1,101 +1,72 @@
 window.portalData = {
   events: [
     {
-      day: "14",
-      month: "giu",
-      category: "movimento",
-      label: "Movimento",
-      title: "Camminata del buon risveglio",
-      description: "Una passeggiata a ritmo libero per iniziare insieme la giornata.",
-      time: "08:00",
-      place: "Belvedere",
-      search: "camminata sport movimento anziani adulti belvedere"
-    },
-    {
-      day: "17",
-      month: "giu",
-      category: "famiglie",
-      label: "Famiglie",
-      title: "Giochi in movimento",
-      description: "Un pomeriggio di attività semplici, inclusive e senza competizione.",
-      time: "17:30",
-      place: "Area comunale",
-      search: "bambini ragazzi famiglie sport gioco"
-    },
-    {
       day: "21",
       month: "giu",
-      category: "incontri",
+      category: "comunita",
       label: "Comunità",
       title: "Benessere In-Comune 2026",
-      description: "La comunità si incontra per condividere idee, attività e nuovi progetti.",
-      time: "18:00",
+      description: "Evento dell'iniziativa promossa dalla Consulta dello Sport, con presentazione del progetto vincitore.",
+      time: "",
       place: "Altavilla Milicia",
-      search: "evento consulta comunità famiglie presentazione"
-    },
-    {
-      day: "24",
-      month: "giu",
-      category: "natura",
-      label: "Natura",
-      title: "Tramonto sul Tirreno",
-      description: "Passeggiata lenta e racconto del paesaggio dal punto panoramico.",
-      time: "19:00",
-      place: "Belvedere",
-      search: "natura mare tramonto passeggiata belvedere"
+      search: "evento consulta sport comunità presentazione benessere in comune"
     }
   ],
   services: [
     {
-      title: "Farmacie",
-      description: "Sedi, turni e indicazioni per trovare il servizio disponibile.",
+      title: "Farmacia Del Corso",
+      description: "Via Loreto 19, Altavilla Milicia.",
       icon: "pharmacy",
-      search: "farmacia farmacie salute medicinali turno",
-      target: "#servizi"
+      search: "farmacia del corso via loreto 19 salute medicinali",
+      href: "https://www.comune.altavillamilicia.pa.it/it/luoghi/412975",
+      action: "Fonte comunale"
     },
     {
-      title: "Medici di base",
-      description: "Informazioni territoriali e collegamenti ai servizi sanitari competenti.",
-      icon: "doctor",
-      search: "medico medici salute assistenza sanitaria asp",
-      target: "#servizi"
+      title: "Farmacia Mandalà",
+      description: "Via San Giuseppe 105, Altavilla Milicia.",
+      icon: "pharmacy",
+      search: "farmacia mandala gioacchino gentile via san giuseppe 105",
+      href: "https://www.comune.altavillamilicia.pa.it/it/luoghi/412975",
+      action: "Fonte comunale"
     },
     {
-      title: "Servizi sociali",
-      description: "Orientamento per persone, famiglie, anziani e situazioni di fragilità.",
+      title: "Servizi Sociali",
+      description: "Informazione, orientamento e accesso ai servizi territoriali. Centralino: 091 915411.",
       icon: "hands",
-      search: "servizi sociali famiglie anziani disabilità aiuto",
-      target: "#servizi"
+      search: "servizi sociali comune famiglie anziani disabilità aiuto 091915411",
+      href: "tel:091915411",
+      action: "Chiama il Comune"
     },
     {
-      title: "Numeri utili",
-      description: "Contatti essenziali e riferimenti per richieste non urgenti.",
-      icon: "phone",
-      search: "telefono numeri utili contatti emergenza informazioni",
-      target: "#servizi"
+      title: "Screening ASP Palermo",
+      description: "Programmi di prevenzione oncologica. Numero verde: 800 833 311.",
+      icon: "doctor",
+      search: "asp palermo screening prevenzione oncologica mammella cervice colon retto 800833311",
+      href: "https://screening.asppalermo.org/",
+      action: "Visita il sito ASP"
     }
   ],
   news: [
     {
       date: "10 giugno 2026",
-      type: "In evidenza",
-      title: "Nasce Benessere.comune, uno spazio digitale per tutta la comunità",
-      description: "Un unico punto di accesso per conoscere attività, servizi, eventi e opportunità del territorio.",
-      search: "portale progetto comune benessere consulta"
+      type: "Consulta dello Sport",
+      title: "Concorso di idee “Benessere.comune”",
+      description: "Una proposta digitale per riunire sport, salute, associazioni, ambiente, eventi e servizi di Altavilla Milicia.",
+      search: "bando concorso benessere comune consulta sport 10 giugno 2026"
     },
     {
-      date: "12 giugno 2026",
-      type: "Movimento",
-      title: "Nuove proposte per muoversi insieme",
-      description: "Il calendario accoglie attività per età, interessi e livelli diversi.",
-      search: "sport movimento calendario attività"
+      date: "Informazione territoriale",
+      type: "Sport",
+      title: "Tre strutture comunali per lo sport",
+      description: "Stadio Santi Bucaro, Centro Tennis Altavilla e Palestra Comunale sono censiti dal Comune.",
+      search: "sport stadio santi bucaro centro tennis palestra comunale"
     },
     {
-      date: "13 giugno 2026",
+      date: "Informazione territoriale",
       type: "Territorio",
-      title: "Percorsi lenti tra panorama e comunità",
-      description: "Una raccolta di itinerari per riscoprire Altavilla Milicia a passo lento.",
-      search: "natura territorio percorsi mare belvedere"
+      title: "Belvedere, cultura e memoria",
+      description: "Aldo Moro, Livatino, la Basilica, il Museo dei Quadretti Votivi e il Teatro Comunale raccontano il territorio.",
+      search: "territorio belvedere aldo moro livatino basilica museo quadretti votivi teatro"
     }
   ]
 };

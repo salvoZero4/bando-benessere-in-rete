@@ -36,10 +36,10 @@
           <h3>${escapeHtml(event.title)}</h3>
           <p>${escapeHtml(event.description)}</p>
           <div class="event-card__meta">
-            <span>
+            ${event.time ? `<span>
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
               ${escapeHtml(event.time)}
-            </span>
+            </span>` : ""}
             <span>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>
               ${escapeHtml(event.place)}
@@ -65,9 +65,9 @@
         <span class="service-card__icon">${icons[service.icon] || icons.phone}</span>
         <h3>${escapeHtml(service.title)}</h3>
         <p>${escapeHtml(service.description)}</p>
-        <button type="button" data-service-search="${escapeHtml(service.title)}">
-          Apri la scheda <span aria-hidden="true">→</span>
-        </button>
+        <a href="${escapeHtml(service.href)}"${service.href.startsWith("http") ? ' target="_blank" rel="noopener"' : ""}>
+          ${escapeHtml(service.action)} <span aria-hidden="true">${service.href.startsWith("http") ? "↗" : "→"}</span>
+        </a>
       </article>
     `).join("");
   }
@@ -78,7 +78,9 @@
         <span class="news-card__meta">${escapeHtml(news.type)} · ${escapeHtml(news.date)}</span>
         <h3>${escapeHtml(news.title)}</h3>
         <p>${escapeHtml(news.description)}</p>
-        <a href="#news">Leggi la comunicazione <span aria-hidden="true">→</span></a>
+        <button class="news-card__action" type="button" data-news-title="${escapeHtml(news.title)}">
+          Leggi la comunicazione <span aria-hidden="true">→</span>
+        </button>
       </article>
     `).join("");
   }
@@ -97,7 +99,7 @@
         title: item.title,
         description: item.description,
         search: `${item.title} ${item.description} ${item.search}`,
-        target: item.target
+        target: "#servizi"
       })),
       ...data.news.map((item) => ({
         type: "Notizia",
@@ -109,8 +111,8 @@
       {
         type: "Area",
         title: "Ambiente e natura",
-        description: "Belvedere, mare e itinerari a passo lento.",
-        search: "ambiente natura mare belvedere sentieri passeggiata camminata",
+        description: "Belvedere, mare e luoghi naturali del territorio.",
+        search: "ambiente natura mare belvedere grotta mazzamuto",
         target: "#territorio"
       },
       {
@@ -134,6 +136,30 @@
 
   function closeSearch() {
     if (searchDialog && searchDialog.open) searchDialog.close();
+  }
+
+  function scrollToTarget(targetId, updateHash = true) {
+    const target = document.getElementById(targetId);
+    if (!target) return false;
+
+    target.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "start"
+    });
+
+    if (updateHash && window.history && window.history.replaceState) {
+      window.history.replaceState(null, "", `#${targetId}`);
+    }
+
+    return true;
+  }
+
+  function scrollToTop() {
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+    window.scrollTo({ top: 0, behavior });
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
   }
 
   function performSearch(term) {
@@ -185,27 +211,6 @@
   renderServices();
   renderNews();
 
-  document.querySelectorAll("[data-event-filter]").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.querySelectorAll("[data-event-filter]").forEach((item) => {
-        const selected = item === button;
-        item.classList.toggle("is-active", selected);
-        item.setAttribute("aria-pressed", String(selected));
-      });
-      renderEvents(button.dataset.eventFilter);
-    });
-  });
-
-  document.querySelector("#show-all-events").addEventListener("click", () => {
-    document.querySelectorAll("[data-event-filter]").forEach((item) => {
-      const selected = item.dataset.eventFilter === "tutti";
-      item.classList.toggle("is-active", selected);
-      item.setAttribute("aria-pressed", String(selected));
-    });
-    eventList.innerHTML = data.events.map(eventTemplate).join("");
-    eventList.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  });
-
   document.querySelectorAll("[data-open-search]").forEach((button) => {
     button.addEventListener("click", () => openSearch());
   });
@@ -236,9 +241,27 @@
     if (event.target.closest("[data-search-result]")) closeSearch();
   });
 
-  serviceList.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-service-search]");
-    if (button) openSearch(button.dataset.serviceSearch);
+  document.addEventListener("click", (event) => {
+    const scrollLink = event.target.closest("[data-scroll-to]");
+    if (scrollLink) {
+      const targetId = scrollLink.dataset.scrollTo;
+      if (document.getElementById(targetId)) {
+        event.preventDefault();
+        closeSearch();
+        scrollToTarget(targetId);
+      }
+    }
+
+    const topButton = event.target.closest("[data-scroll-top]");
+    if (topButton) {
+      event.preventDefault();
+      scrollToTop();
+    }
+  });
+
+  newsList.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-news-title]");
+    if (button) openSearch(button.dataset.newsTitle);
   });
 
   [searchDialog, cmsDialog].forEach((dialog) => {
@@ -283,4 +306,11 @@
   fontToggle.addEventListener("click", () => {
     setPreference("large-text", "benessere-font", fontToggle, "Ripristina testo", "Ingrandisci testo");
   });
+
+  const backToTop = document.querySelector(".back-to-top");
+  const updateBackToTop = () => {
+    backToTop.hidden = window.scrollY < 650;
+  };
+  window.addEventListener("scroll", updateBackToTop, { passive: true });
+  updateBackToTop();
 })();
