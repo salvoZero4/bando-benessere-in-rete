@@ -1,16 +1,19 @@
 (function () {
   "use strict";
 
-  const data = window.portalData || { events: [], services: [], news: [] };
+  const data = window.portalData || { events: [], services: [], doctors: [], news: [] };
   const icons = {
     pharmacy: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12 5h8v22h-8zM5 12h22v8H5z"/></svg>',
+    parapharmacy: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 11h16l-1 16H9L8 11Z"/><path d="M12 11V8a4 4 0 0 1 8 0v3M13 18h6m-3-3v6"/></svg>',
     doctor: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="10" r="5"/><path d="M7 28c0-7 3-11 9-11s9 4 9 11M8 5v7a4 4 0 0 0 8 0V5"/></svg>',
     hands: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 18c5-1 8 1 11 5l1 2 1-2c3-4 6-6 11-5M6 16V8m20 8V8"/><path d="M6 9c3 0 5 2 5 5v2m15-7c-3 0-5 2-5 5v2"/></svg>',
-    phone: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 5 5 8c1 10 9 18 19 19l3-4-6-5-3 3c-4-2-7-5-9-9l3-3-3-4Z"/></svg>'
+    phone: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 5 5 8c1 10 9 18 19 19l3-4-6-5-3 3c-4-2-7-5-9-9l3-3-3-4Z"/></svg>',
+    email: '<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="2"/><path d="m5 9 11 9L27 9"/></svg>'
   };
 
   const eventList = document.querySelector("#event-list");
   const serviceList = document.querySelector("#service-list");
+  const doctorList = document.querySelector("#doctor-list");
   const newsList = document.querySelector("#news-list");
   const searchDialog = document.querySelector("#search-dialog");
   const cmsDialog = document.querySelector("#cms-dialog");
@@ -72,6 +75,45 @@
     `).join("");
   }
 
+  function renderDoctors() {
+    doctorList.innerHTML = data.doctors.map((doctor) => `
+      <article class="doctor-card">
+        <div class="doctor-card__heading">
+          <span class="doctor-card__icon">${icons.doctor}</span>
+          <div>
+            <span>Medicina generale</span>
+            <h4>${escapeHtml(doctor.name)}</h4>
+          </div>
+        </div>
+        <p class="doctor-card__address">${escapeHtml(doctor.address)}</p>
+        <div class="doctor-card__contacts">
+          ${doctor.phones.map((phone) => `
+            <a href="tel:${escapeHtml(phone.replaceAll(" ", ""))}">
+              <span class="doctor-contact__icon">${icons.phone}</span>
+              <span>${escapeHtml(phone)}</span>
+            </a>
+          `).join("")}
+          <a href="mailto:${escapeHtml(doctor.email)}">
+            <span class="doctor-contact__icon">${icons.email}</span>
+            <span>${escapeHtml(doctor.email)}</span>
+          </a>
+        </div>
+        ${doctor.note ? `<p class="doctor-card__note">${escapeHtml(doctor.note)}</p>` : ""}
+        <details>
+          <summary>Orari di ricevimento</summary>
+          <dl class="doctor-hours">
+            ${doctor.hours.map(([day, time]) => `
+              <div>
+                <dt>${escapeHtml(day)}</dt>
+                <dd>${escapeHtml(time)}</dd>
+              </div>
+            `).join("")}
+          </dl>
+        </details>
+      </article>
+    `).join("");
+  }
+
   function renderNews() {
     newsList.innerHTML = data.news.map((news) => `
       <article class="news-card">
@@ -101,6 +143,13 @@
         search: `${item.title} ${item.description} ${item.search}`,
         target: "#servizi"
       })),
+      ...data.doctors.map((item) => ({
+        type: "Medico di base",
+        title: item.name,
+        description: item.address,
+        search: `${item.name} ${item.address} ${item.phones.join(" ")} ${item.search}`,
+        target: "#medici-base"
+      })),
       ...data.news.map((item) => ({
         type: "Notizia",
         title: item.title,
@@ -111,8 +160,8 @@
       {
         type: "Area",
         title: "Ambiente e natura",
-        description: "Belvedere, mare e luoghi naturali del territorio.",
-        search: "ambiente natura mare belvedere grotta mazzamuto",
+        description: "Belvedere Aldo Moro, Belvedere Livatino, mare e luoghi naturali.",
+        search: "ambiente natura mare belvedere aldo moro livatino grotta mazzamuto",
         target: "#territorio"
       },
       {
@@ -186,30 +235,25 @@
       : `<p>Nessun risultato per “${escapeHtml(term)}”. Prova con sport, farmacia, natura o famiglie.</p>`;
   }
 
-  function setPreference(className, storageKey, button, activeLabel, inactiveLabel) {
-    const active = document.body.classList.toggle(className);
-    button.textContent = active ? activeLabel : inactiveLabel;
-    try {
-      localStorage.setItem(storageKey, active ? "true" : "false");
-    } catch (error) {
-      // The preference still works for the current session.
-    }
-  }
-
-  function restorePreference(className, storageKey, button, activeLabel) {
-    try {
-      if (localStorage.getItem(storageKey) === "true") {
-        document.body.classList.add(className);
-        button.textContent = activeLabel;
-      }
-    } catch (error) {
-      // Storage can be unavailable in private contexts; no action is needed.
-    }
-  }
-
   renderEvents();
   renderServices();
+  renderDoctors();
   renderNews();
+
+  doctorList.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+    const card = doctorList.querySelector(".doctor-card");
+    if (!card) return;
+
+    event.preventDefault();
+    const gap = Number.parseFloat(window.getComputedStyle(doctorList).columnGap) || 0;
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    doctorList.scrollBy({
+      left: direction * (card.getBoundingClientRect().width + gap),
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+    });
+  });
 
   document.querySelectorAll("[data-open-search]").forEach((button) => {
     button.addEventListener("click", () => openSearch());
@@ -292,19 +336,6 @@
   document.querySelector("#cms-demo-button").addEventListener("click", () => cmsDialog.showModal());
   document.querySelectorAll("[data-close-cms]").forEach((button) => {
     button.addEventListener("click", () => cmsDialog.close());
-  });
-
-  const contrastToggle = document.querySelector("#contrast-toggle");
-  const fontToggle = document.querySelector("#font-toggle");
-  restorePreference("high-contrast", "benessere-contrast", contrastToggle, "Ripristina contrasto");
-  restorePreference("large-text", "benessere-font", fontToggle, "Ripristina testo");
-
-  contrastToggle.addEventListener("click", () => {
-    setPreference("high-contrast", "benessere-contrast", contrastToggle, "Ripristina contrasto", "Aumenta contrasto");
-  });
-
-  fontToggle.addEventListener("click", () => {
-    setPreference("large-text", "benessere-font", fontToggle, "Ripristina testo", "Ingrandisci testo");
   });
 
   const backToTop = document.querySelector(".back-to-top");

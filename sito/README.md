@@ -25,7 +25,6 @@ installazione, server, account o connessione internet.
 - simulazione di aggiornamento contenuti;
 - navigazione da tastiera e focus visibile;
 - supporto alla riduzione delle animazioni;
-- opzioni per contrasto e dimensione del testo;
 - funzionamento interamente locale.
 
 ## Nota sui contenuti
@@ -37,6 +36,6 @@ completati con materiali autorizzati della Consulta o del Comune.
 
 ## Aggiornamento dei dati
 
-Eventi, servizi e news si modificano in `js/data.js`. Questa separazione
+Eventi, servizi, medici e news si modificano in `js/data.js`. Questa separazione
 costituisce il modello dati che, in una fase successiva, potrebbe essere
 collegato a un CMS senza riprogettare l'interfaccia.

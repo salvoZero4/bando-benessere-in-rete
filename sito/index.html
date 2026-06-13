@@ -8,7 +8,7 @@
       content="Benessere.comune: sport, salute, natura, associazioni ed eventi ad Altavilla Milicia."
     />
     <meta name="theme-color" content="#0b6656" />
-    <title>Benessere.comune | Altavilla Milicia</title>
+    <title>Altavilla Milicia Benessere</title>
     <link rel="stylesheet" href="css/styles.css" />
     <script src="js/data.js" defer></script>
     <script src="js/app.js" defer></script>
@@ -31,7 +31,7 @@
             <path class="brand__mark-line" d="M13 25h7l3-9 4 16 3-7h5" />
           </svg>
           <span class="brand__text">
-            <span class="brand__name">Benessere<span>.comune</span></span>
+            <span class="brand__name">Benessere <span>in</span> comune</span>
             <span class="brand__place">Altavilla Milicia</span>
           </span>
         </a>
@@ -111,8 +111,8 @@
               <button type="button" data-search-term="stadio">
                 Impianti sportivi
               </button>
-              <button type="button" data-search-term="famiglie">
-                Per famiglie
+              <button type="button" data-search-term="medico">
+                Medici di base
               </button>
             </div>
           </div>
@@ -133,7 +133,7 @@
             </div>
             <div class="hero-badge hero-badge--place">
               <span class="status-dot" aria-hidden="true"></span>
-              <span><strong>Luogo simbolo</strong>Belvedere</span>
+              <span><strong>Luogo simbolo</strong>Belvedere Aldo Moro</span>
             </div>
           </div>
         </div>
@@ -351,7 +351,9 @@
         <div class="shell territory__grid">
           <div class="territory__visual">
             <figure class="photo-placeholder photo-placeholder--territory">
-              <span class="photo-placeholder__label">Foto del Belvedere</span>
+              <span class="photo-placeholder__label"
+                >Foto del Belvedere Aldo Moro</span
+              >
               <small>Spazio riservato · assets/foto/belvedere.jpg</small>
             </figure>
           </div>
@@ -362,16 +364,22 @@
               Altavilla Milicia,<br />affacciata sul Tirreno.
             </h2>
             <p>
-              Il Belvedere apre lo sguardo sulla costa da Cefalù a Mongerbino.
-              Poco distante, Piazza Matrice riunisce il Belvedere, la Basilica e
-              il Museo dei Quadretti Votivi.
+              Il Belvedere Aldo Moro apre lo sguardo sulla costa da Cefalù a
+              Mongerbino. Poco distante, Piazza Matrice riunisce il Belvedere
+              Livatino, la Basilica e il Museo dei Quadretti Votivi.
             </p>
             <ul class="feature-list" id="luoghi-altavilla">
               <li>
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="m5 12 4 4L19 6" />
                 </svg>
-                Belvedere
+                Belvedere Aldo Moro
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m5 12 4 4L19 6" />
+                </svg>
+                Belvedere Livatino
               </li>
               <li>
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -413,7 +421,7 @@
               <h2 id="movimento-title">Gli impianti sportivi comunali</h2>
             </div>
             <p>
-              Strutture reali censite dal Comune per calcio, tennis, pallavolo,
+              Strutture censite dal Comune per calcio, tennis, pallavolo,
               basket e altre attività.
             </p>
           </div>
@@ -508,25 +516,83 @@
           </div>
 
           <div class="service-grid" id="service-list"></div>
-          <div class="urgent-note">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 3 2.5 20h19L12 3Z" />
-              <path d="M12 9v5m0 3h.01" />
-            </svg>
-            <div>
-              <strong>In caso di emergenza</strong>
-              <span
-                >Chiama il numero unico europeo <a href="tel:112">112</a>.
-                Questo portale non sostituisce i servizi di emergenza.</span
-              >
+
+          <section
+            class="doctors-section"
+            id="medici-base"
+            aria-labelledby="medici-base-title"
+          >
+            <div class="doctors-section__heading">
+              <div>
+                <p class="eyebrow">Medicina generale</p>
+                <h3 id="medici-base-title">
+                  Medici di base ad Altavilla Milicia
+                </h3>
+                <p>
+                  Studi, recapiti e orari pubblicati dall'ASP Palermo
+                  nell'elenco del Distretto sanitario 39.
+                </p>
+              </div>
             </div>
-          </div>
-          <p class="source-note">
-            Indirizzi e contatti provengono dal Comune di Altavilla Milicia e
-            dall'ASP Palermo. Gli orari delle farmacie non sono riportati perché
-            soggetti ad aggiornamento.
-          </p>
-        </div>
+
+            <p class="doctor-scroll-hint">
+              Scorri orizzontalmente per vedere tutti i medici
+              <span aria-hidden="true">→</span>
+            </p>
+            <div
+              class="doctor-grid"
+              id="doctor-list"
+              tabindex="0"
+              role="region"
+              aria-label="Elenco scorrevole dei medici di base"
+            ></div>
+
+            <div class="health-access-grid">
+              <article>
+                <h4>Scelta o revoca del medico</h4>
+                <p>
+                  Ufficio ASP, Via Bernardo Mattarella 166, Bagheria.
+                  Ricevimento: lunedì, mercoledì e venerdì 08:30–12:30; martedì
+                  15:00–16:30.
+                </p>
+                <p class="health-access-grid__links">
+                  <div>
+                    <span class="doctor-contact__icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 5 5 8c1 10 9 18 19 19l3-4-6-5-3 3c-4-2-7-5-9-9l3-3-3-4Z"/></svg></span>
+                    <a href="tel:0917036519">091 7036519</a>
+                  </div>
+                  <div>
+                    <span class="doctor-contact__icon"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="2"/><path d="m5 9 11 9L27 9"/></svg></span>
+                    <a href="mailto:anagrafe.d39@asppalermo.org"
+                    >anagrafe.d39@asppalermo.org</a
+                    >
+                  </div>
+                </p>
+              </article>
+              <article>
+                <h4>Guardia Medica</h4>
+                <p>
+                  Via Oberdan 23, Altavilla Milicia. Attiva nei
+                  giorni feriali dalle 20:00 alle 08:00 e secondo gli orari
+                  festivi pubblicati dall'ASP.
+                </p>
+                <p class="health-access-grid__links">
+                  <div>
+                     <span class="doctor-contact__icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 5 5 8c1 10 9 18 19 19l3-4-6-5-3 3c-4-2-7-5-9-9l3-3-3-4Z"/></svg></span>
+                    <a href="tel:0917036314">091 7036314</a>
+                  </div>
+                  <div>
+                     <span class="doctor-contact__icon"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="2"/><path d="m5 9 11 9L27 9"/></svg></span>
+                  <a
+                    href="https://www.asppalermo.org/amministrazione/unita_organizzativa/distretto-sanitario-n-39-bagheria/"
+                    target="_blank"
+                    rel="noopener"
+                    >Pagina del Distretto 39</a
+                  >
+                  </div>
+                </p>
+              </article>
+            </div>
+          </section>
       </section>
 
       <section
@@ -555,20 +621,6 @@
                 >Chiama 091 915441</a
               >
             </div>
-            <dl class="community__stats">
-              <div>
-                <dt>3</dt>
-                <dd>ambiti: sport, cultura, sociale</dd>
-              </div>
-              <div>
-                <dt>113</dt>
-                <dd>Via Vittorio Veneto</dd>
-              </div>
-              <div>
-                <dt>441</dt>
-                <dd>interno comunale</dd>
-              </div>
-            </dl>
           </div>
 
           <div class="community__mosaic">
@@ -663,7 +715,7 @@
       </section>
     </main>
 
-    <footer class="site-footer" id="accessibilita">
+    <footer class="site-footer">
       <div class="shell site-footer__grid">
         <div>
           <a class="brand brand--footer" href="#inizio" data-scroll-to="inizio">
@@ -717,24 +769,6 @@
             </li>
           </ul>
         </div>
-        <div>
-          <h2 class="footer-title">Accessibilità</h2>
-          <ul>
-            <li>
-              <a href="#accessibilita" data-scroll-to="accessibilita"
-                >Dichiarazione di accessibilità</a
-              >
-            </li>
-            <li>
-              <button type="button" id="contrast-toggle">
-                Aumenta contrasto
-              </button>
-            </li>
-            <li>
-              <button type="button" id="font-toggle">Ingrandisci testo</button>
-            </li>
-          </ul>
-        </div>
       </div>
       <div class="shell site-footer__bottom">
         <span>Prototipo non istituzionale · Giugno 2026</span>
@@ -760,9 +794,9 @@
           data-close-search
           aria-label="Chiudi la ricerca"
         >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m6 6 12 12M18 6 6 18" />
-          </svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
         </button>
       </div>
       <form class="dialog-search" id="dialog-search" role="search">
