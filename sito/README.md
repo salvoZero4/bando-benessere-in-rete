@@ -14,6 +14,8 @@ installazione, server, account o connessione internet.
 - `css/styles.css`: design system, responsive design e modalità accessibili;
 - `js/data.js`: dati territoriali verificati separati dal layout;
 - `js/app.js`: ricerca, filtri, menu mobile e simulazione CMS.
+- `assets/loghi`: marchi degli organizzatori e dei partner ricavati dalla
+  copertina ufficiale fornita.
 
 ## Funzioni dimostrate
 

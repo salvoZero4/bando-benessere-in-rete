@@ -19,21 +19,26 @@
     <header class="site-header" id="inizio">
       <div class="shell site-header__inner">
         <a
-          class="brand"
+          class="header-logos"
           href="#inizio"
           data-scroll-to="inizio"
-          aria-label="Benessere.comune, torna all'inizio"
+          aria-label="Organizzatori di Benessere in Comune, torna all'inizio"
         >
-          <svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
-            <path
-              d="M24 4C14.1 4 6 12.1 6 22c0 12.6 15.6 21.1 17.3 22a1.6 1.6 0 0 0 1.4 0C26.4 43.1 42 34.6 42 22 42 12.1 33.9 4 24 4Z"
-            />
-            <path class="brand__mark-line" d="M13 25h7l3-9 4 16 3-7h5" />
-          </svg>
-          <span class="brand__text">
-            <span class="brand__name">Benessere <span>in</span> comune</span>
-            <span class="brand__place">Altavilla Milicia</span>
-          </span>
+          <img
+            class="header-logo header-logo--sport"
+            src="assets/loghi/settimane-altavillesi-sport.png"
+            alt="Settimane Altavillesi dello Sport"
+          />
+          <img
+            class="header-logo header-logo--comune"
+            src="assets/loghi/comune-altavilla-milicia.png"
+            alt="Comune di Altavilla Milicia"
+          />
+          <img
+            class="header-logo header-logo--yoga"
+            src="assets/loghi/yoga-zone-sicilia.png"
+            alt="Yoga Zone Sicilia A.P.S."
+          />
         </a>
 
         <button
@@ -80,7 +85,10 @@
         <div class="shell hero__grid">
           <div class="hero__content">
             <p class="eyebrow">La comunità che si prende cura di sé</p>
-            <h1 id="hero-title">Il benessere è più vicino di quanto pensi.</h1>
+            <h1 id="hero-title">
+              Il <span class="brush-word">benessere</span> è più vicino di
+              quanto pensi.
+            </h1>
             <p class="hero__lead">
               Attività, luoghi, servizi e persone di Altavilla Milicia, raccolti
               in uno spazio semplice da esplorare.
@@ -135,26 +143,6 @@
               <span class="status-dot" aria-hidden="true"></span>
               <span><strong>Luogo simbolo</strong>Belvedere Aldo Moro</span>
             </div>
-          </div>
-        </div>
-
-        <div
-          class="shell impact-strip"
-          aria-label="Caratteristiche del portale"
-        >
-          <div>
-            <strong>6</strong>
-            <span>aree del benessere</span>
-          </div>
-          <div>
-            <strong>1</strong>
-            <span>comunità connessa</span>
-          </div>
-          <div>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m5 12 4 4L19 6" />
-            </svg>
-            <span>semplice e accessibile</span>
           </div>
         </div>
       </section>
@@ -515,7 +503,17 @@
             </button>
           </div>
 
-          <div class="service-grid" id="service-list"></div>
+          <p class="service-scroll-hint">
+            Scorri orizzontalmente per vedere tutti i servizi
+            <span aria-hidden="true">→</span>
+          </p>
+          <div
+            class="service-grid"
+            id="service-list"
+            tabindex="0"
+            role="region"
+            aria-label="Elenco scorrevole dei servizi sanitari e territoriali"
+          ></div>
 
           <section
             class="doctors-section"
@@ -549,47 +547,79 @@
 
             <div class="health-access-grid">
               <article>
-                <h4>Scelta o revoca del medico</h4>
+                <div class="health-access-grid__heading">
+                  <span class="health-access-grid__icon" aria-hidden="true">
+                    <svg viewBox="0 0 32 32">
+                      <circle cx="16" cy="16" r="12" />
+                      <path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12M16 4c-4 4-6 8-6 12s2 8 6 12" />
+                    </svg>
+                  </span>
+                  <h4>Scelta o revoca del medico</h4>
+                </div>
                 <p>
                   Ufficio ASP, Via Bernardo Mattarella 166, Bagheria.
                   Ricevimento: lunedì, mercoledì e venerdì 08:30–12:30; martedì
                   15:00–16:30.
                 </p>
-                <p class="health-access-grid__links">
-                  <div>
-                    <span class="doctor-contact__icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 5 5 8c1 10 9 18 19 19l3-4-6-5-3 3c-4-2-7-5-9-9l3-3-3-4Z"/></svg></span>
-                    <a href="tel:0917036519">091 7036519</a>
-                  </div>
-                  <div>
-                    <span class="doctor-contact__icon"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="2"/><path d="m5 9 11 9L27 9"/></svg></span>
-                    <a href="mailto:anagrafe.d39@asppalermo.org"
-                    >anagrafe.d39@asppalermo.org</a
-                    >
-                  </div>
-                </p>
+                <div class="health-access-grid__links">
+                  <a
+                    href="tel:0917036519"
+                    aria-label="Chiama l'Ufficio scelta o revoca del medico"
+                  >
+                    <span class="doctor-contact__icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 5 5 8c1 10 9 18 19 19l3-4-6-5-3 3c-4-2-7-5-9-9l3-3-3-4Z"/></svg></span>
+                    <span>Chiama</span>
+                  </a>
+                  <a
+                    href="mailto:anagrafe.d39@asppalermo.org"
+                    aria-label="Invia un'email all'Ufficio scelta o revoca del medico"
+                  >
+                    <span class="doctor-contact__icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="4" y="7" width="24" height="18" rx="2"/><path d="m5 9 11 9L27 9"/></svg></span>
+                    <span>Invia email</span>
+                  </a>
+                  <a
+                    href="https://www.asppalermo.org/modulistica-scelta-o-revoca-medico-di-base-e-pediatra/"
+                    target="_blank"
+                    rel="noopener"
+                    aria-label="Vai alla modulistica ASP per scelta o revoca del medico"
+                  >
+                    <span class="doctor-contact__icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12M16 4c-4 4-6 8-6 12s2 8 6 12"/></svg></span>
+                    <span>Vai al sito</span>
+                  </a>
+                </div>
               </article>
               <article>
-                <h4>Guardia Medica</h4>
+                <div class="health-access-grid__heading">
+                  <span class="health-access-grid__icon" aria-hidden="true">
+                    <svg viewBox="0 0 32 32">
+                      <circle cx="16" cy="16" r="12" />
+                      <path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12M16 4c-4 4-6 8-6 12s2 8 6 12" />
+                    </svg>
+                  </span>
+                  <h4>Guardia Medica</h4>
+                </div>
                 <p>
                   Via Oberdan 23, Altavilla Milicia. Attiva nei
                   giorni feriali dalle 20:00 alle 08:00 e secondo gli orari
                   festivi pubblicati dall'ASP.
                 </p>
-                <p class="health-access-grid__links">
-                  <div>
-                     <span class="doctor-contact__icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 5 5 8c1 10 9 18 19 19l3-4-6-5-3 3c-4-2-7-5-9-9l3-3-3-4Z"/></svg></span>
-                    <a href="tel:0917036314">091 7036314</a>
-                  </div>
-                  <div>
-                     <span class="doctor-contact__icon"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="2"/><path d="m5 9 11 9L27 9"/></svg></span>
+                <div class="health-access-grid__links">
+                  <a
+                    href="tel:0917036314"
+                    aria-label="Chiama la Guardia Medica di Altavilla Milicia"
+                  >
+                    <span class="doctor-contact__icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 5 5 8c1 10 9 18 19 19l3-4-6-5-3 3c-4-2-7-5-9-9l3-3-3-4Z"/></svg></span>
+                    <span>Chiama</span>
+                  </a>
                   <a
                     href="https://www.asppalermo.org/amministrazione/unita_organizzativa/distretto-sanitario-n-39-bagheria/"
                     target="_blank"
                     rel="noopener"
-                    >Pagina del Distretto 39</a
+                    aria-label="Vai al sito ASP del Distretto sanitario 39"
                   >
-                  </div>
-                </p>
+                    <span class="doctor-contact__icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M4 16h24M16 4c4 4 6 8 6 12s-2 8-6 12M16 4c-4 4-6 8-6 12s2 8 6 12"/></svg></span>
+                    <span>Vai al sito</span>
+                  </a>
+                </div>
               </article>
             </div>
           </section>
@@ -716,65 +746,108 @@
     </main>
 
     <footer class="site-footer">
-      <div class="shell site-footer__grid">
-        <div>
-          <a class="brand brand--footer" href="#inizio" data-scroll-to="inizio">
-            <svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
-              <path
-                d="M24 4C14.1 4 6 12.1 6 22c0 12.6 15.6 21.1 17.3 22a1.6 1.6 0 0 0 1.4 0C26.4 43.1 42 34.6 42 22 42 12.1 33.9 4 24 4Z"
-              />
-              <path class="brand__mark-line" d="M13 25h7l3-9 4 16 3-7h5" />
-            </svg>
-            <span class="brand__text">
-              <span class="brand__name">Benessere<span>.comune</span></span>
-              <span class="brand__place">Altavilla Milicia</span>
-            </span>
-          </a>
-          <p class="footer-description">
-            Proposta per il concorso di idee “Benessere.comune”, Consulta dello
-            Sport di Altavilla Milicia.
-          </p>
+      <section class="partner-strip" aria-labelledby="partner-title">
+        <div class="shell">
+          <h2 class="partner-strip__title" id="partner-title">
+            In collaborazione con
+          </h2>
+          <div class="partner-logos">
+            <img
+              class="partner-logo partner-logo--basilica"
+              src="assets/loghi/basilica-madonna-milicia.png"
+              alt="Basilica Santuario Madonna della Milicia"
+            />
+            <img
+              class="partner-logo partner-logo--wwf"
+              src="assets/loghi/wwf.png"
+              alt="WWF"
+            />
+            <img
+              class="partner-logo partner-logo--calapanama"
+              src="assets/loghi/calapanama.png"
+              alt="CalaPanama Associazione culturale"
+            />
+            <img
+              class="partner-logo partner-logo--plasticfree"
+              src="assets/loghi/plasticfree.png"
+              alt="Plastic Free"
+            />
+            <img
+              class="partner-logo partner-logo--istituto"
+              src="assets/loghi/istituto-comprensivo-altavilla.png"
+              alt="Istituto Comprensivo Statale Altavilla Milicia"
+            />
+          </div>
         </div>
-        <div>
-          <h2 class="footer-title">Esplora</h2>
-          <ul>
-            <li>
-              <a href="#movimento" data-scroll-to="movimento"
-                >Sport e movimento</a
-              >
-            </li>
-            <li>
-              <a href="#associazioni" data-scroll-to="associazioni"
-                >Associazioni</a
-              >
-            </li>
-            <li>
-              <a href="#eventi" data-scroll-to="eventi">Calendario eventi</a>
-            </li>
-          </ul>
+      </section>
+
+      <div class="site-footer__main">
+        <div class="shell site-footer__grid">
+          <div>
+            <a
+              class="brand brand--footer"
+              href="#inizio"
+              data-scroll-to="inizio"
+            >
+              <svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
+                <path
+                  d="M24 4C14.1 4 6 12.1 6 22c0 12.6 15.6 21.1 17.3 22a1.6 1.6 0 0 0 1.4 0C26.4 43.1 42 34.6 42 22 42 12.1 33.9 4 24 4Z"
+                />
+                <path class="brand__mark-line" d="M13 25h7l3-9 4 16 3-7h5" />
+              </svg>
+              <span class="brand__text">
+                <span class="brand__name">Benessere <span>in</span> comune</span>
+                <span class="brand__place">Altavilla Milicia</span>
+              </span>
+            </a>
+            <p class="footer-description">
+              Proposta per il concorso di idee “Benessere.comune”, Consulta
+              dello Sport di Altavilla Milicia.
+            </p>
+          </div>
+          <div>
+            <h2 class="footer-title">Esplora</h2>
+            <ul>
+              <li>
+                <a href="#movimento" data-scroll-to="movimento"
+                  >Sport e movimento</a
+                >
+              </li>
+              <li>
+                <a href="#associazioni" data-scroll-to="associazioni"
+                  >Associazioni</a
+                >
+              </li>
+              <li>
+                <a href="#eventi" data-scroll-to="eventi"
+                  >Calendario eventi</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="footer-title">Informazioni</h2>
+            <ul>
+              <li>
+                <a href="#servizi" data-scroll-to="servizi">Salute e servizi</a>
+              </li>
+              <li>
+                <a href="#territorio" data-scroll-to="territorio"
+                  >Ambiente e natura</a
+                >
+              </li>
+              <li>
+                <a href="#news" data-scroll-to="news">News e comunicazioni</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div>
-          <h2 class="footer-title">Informazioni</h2>
-          <ul>
-            <li>
-              <a href="#servizi" data-scroll-to="servizi">Salute e servizi</a>
-            </li>
-            <li>
-              <a href="#territorio" data-scroll-to="territorio"
-                >Ambiente e natura</a
-              >
-            </li>
-            <li>
-              <a href="#news" data-scroll-to="news">News e comunicazioni</a>
-            </li>
-          </ul>
+        <div class="shell site-footer__bottom">
+          <span>Prototipo non istituzionale · Giugno 2026</span>
+          <span
+            >Progettato con cura per persone, territorio e accessibilità.</span
+          >
         </div>
-      </div>
-      <div class="shell site-footer__bottom">
-        <span>Prototipo non istituzionale · Giugno 2026</span>
-        <span
-          >Progettato con cura per persone, territorio e accessibilità.</span
-        >
       </div>
     </footer>
 
