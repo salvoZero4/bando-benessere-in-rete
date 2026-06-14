@@ -2,6 +2,7 @@
   "use strict";
 
   const data = window.portalData || {
+    environmentDetails: {},
     events: [],
     services: [],
     doctors: [],
@@ -13,7 +14,7 @@
     parapharmacy:
       '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 11h16l-1 16H9L8 11Z"/><path d="M12 11V8a4 4 0 0 1 8 0v3M13 18h6m-3-3v6"/></svg>',
     doctor:
-      '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="10" r="5"/><path d="M7 28c0-7 3-11 9-11s9 4 9 11M8 5v7a4 4 0 0 0 8 0V5"/></svg>',
+      '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="12.5" cy="7.5" r="4"/><path d="M4.5 28v-4.2c0-5.3 3.2-8.8 8-8.8s8 3.5 8 8.8V28"/><path class="doctor-stethoscope" d="M9 15.8v3a3.8 3.8 0 0 0 7.6 0v-3M16.6 18.8v2.5c0 1.5 1.2 2.7 2.7 2.7"/><circle class="doctor-stethoscope-head" cx="20.5" cy="24" r="2.1"/><path class="doctor-medical-cross" d="M22 5h2.4V2.6h3V5h2.4v3h-2.4v2.4h-3V8H22z"/></svg>',
     hands:
       '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 18c5-1 8 1 11 5l1 2 1-2c3-4 6-6 11-5M6 16V8m20 8V8"/><path d="M6 9c3 0 5 2 5 5v2m15-7c-3 0-5 2-5 5v2"/></svg>',
     phone:
@@ -27,6 +28,8 @@
   const doctorList = document.querySelector("#doctor-list");
   const newsList = document.querySelector("#news-list");
   const searchDialog = document.querySelector("#search-dialog");
+  const environmentDialog = document.querySelector("#environment-dialog");
+  const communicationDialog = document.querySelector("#communication-dialog");
   const cmsDialog = document.querySelector("#cms-dialog");
 
   function escapeHtml(value) {
@@ -155,12 +158,17 @@
   function renderNews() {
     newsList.innerHTML = data.news
       .map(
-        (news) => `
+        (news, index) => `
       <article class="news-card">
         <span class="news-card__meta">${escapeHtml(news.type)} · ${escapeHtml(news.date)}</span>
         <h3>${escapeHtml(news.title)}</h3>
         <p>${escapeHtml(news.description)}</p>
-        <button class="news-card__action" type="button" data-news-title="${escapeHtml(news.title)}">
+        <button
+          class="news-card__action"
+          type="button"
+          data-news-index="${index}"
+          aria-haspopup="dialog"
+        >
           Leggi la comunicazione <span aria-hidden="true">→</span>
         </button>
       </article>
@@ -203,9 +211,9 @@
         type: "Area",
         title: "Ambiente e natura",
         description:
-          "Belvedere Aldo Moro, Belvedere Livatino, mare e luoghi naturali.",
+          "Riserva di Pizzo Cane, Pizzo Trigna e Grotta Mazzamuto, spiagge e iniziative per la sostenibilità.",
         search:
-          "ambiente natura mare belvedere aldo moro livatino grotta mazzamuto",
+          "ambiente natura riserva pizzo cane pizzo trigna grotta mazzamuto spiagge cala sciabica passi capannina catena sostenibilità raccolta differenziata plastic free educazione ambientale scuola",
         target: "#territorio",
       },
       {
@@ -231,16 +239,94 @@
     if (searchDialog && searchDialog.open) searchDialog.close();
   }
 
+  function openCommunication(index, trigger) {
+    const news = data.news[index];
+    if (!communicationDialog || !news) return;
+
+    communicationDialog.querySelector("#communication-title").textContent =
+      news.title;
+    communicationDialog.querySelector("#communication-subtitle").textContent =
+      news.description;
+    communicationDialog.querySelector("#communication-type").textContent =
+      news.type;
+    communicationDialog.querySelector("#communication-date").textContent =
+      news.date;
+
+    const content = communicationDialog.querySelector("#communication-content");
+    content.replaceChildren(
+      ...(news.content || [news.description]).map((paragraph) => {
+        const element = document.createElement("p");
+        element.textContent = paragraph;
+        return element;
+      }),
+    );
+
+    communicationDialog._returnFocus = trigger;
+    communicationDialog.showModal();
+  }
+
+  function closeCommunication() {
+    if (communicationDialog?.open) communicationDialog.close();
+  }
+
+  function openEnvironmentDetail(detailId, trigger) {
+    const detail = data.environmentDetails?.[detailId];
+    if (!environmentDialog || !detail) return;
+
+    environmentDialog.dataset.theme = detail.theme || "forest";
+    environmentDialog.querySelector("#environment-dialog-title").textContent =
+      detail.title;
+    environmentDialog.querySelector(
+      "#environment-dialog-subtitle",
+    ).textContent = detail.subtitle;
+    environmentDialog.querySelector("#environment-dialog-type").textContent =
+      detail.type;
+
+    const content = environmentDialog.querySelector(
+      "#environment-dialog-content",
+    );
+    content.replaceChildren(
+      ...(detail.content || [detail.subtitle]).map((paragraph) => {
+        const element = document.createElement("p");
+        element.textContent = paragraph;
+        return element;
+      }),
+    );
+
+    environmentDialog._returnFocus = trigger;
+    environmentDialog.showModal();
+  }
+
+  function closeEnvironmentDetail() {
+    if (environmentDialog?.open) environmentDialog.close();
+  }
+
   function scrollToTarget(targetId, updateHash = true) {
     const target = document.getElementById(targetId);
     if (!target) return false;
 
-    target.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-      block: "start",
-    });
+    const scrollPadding =
+      Number.parseFloat(
+        window.getComputedStyle(document.documentElement).scrollPaddingTop,
+      ) || 0;
+    const targetPosition =
+      target.getBoundingClientRect().top + window.scrollY - scrollPadding;
+    const distance = Math.abs(window.scrollY - targetPosition);
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (reduceMotion || distance > 1400) {
+      const root = document.documentElement;
+      const previousScrollBehavior = root.style.scrollBehavior;
+      root.style.scrollBehavior = "auto";
+      window.scrollTo({ top: targetPosition, behavior: "auto" });
+      window.requestAnimationFrame(() => {
+        root.style.scrollBehavior = previousScrollBehavior;
+      });
+    } else {
+      window.scrollTo({ top: targetPosition, behavior: "smooth" });
+    }
 
     if (updateHash && window.history && window.history.replaceState) {
       window.history.replaceState(null, "", `#${targetId}`);
@@ -250,11 +336,10 @@
   }
 
   function scrollToTop() {
-    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)")
-      .matches
-      ? "auto"
-      : "smooth";
-    window.scrollTo({ top: 0, behavior });
+    const root = document.documentElement;
+    root.style.scrollBehavior = "auto";
+    window.scrollTo({ top: 0, behavior: "auto" });
+
     if (window.history && window.history.replaceState) {
       window.history.replaceState(
         null,
@@ -378,15 +463,48 @@
   });
 
   newsList.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-news-title]");
-    if (button) openSearch(button.dataset.newsTitle);
+    const button = event.target.closest("[data-news-index]");
+    if (button) {
+      openCommunication(Number.parseInt(button.dataset.newsIndex, 10), button);
+    }
   });
 
-  [searchDialog, cmsDialog].forEach((dialog) => {
-    dialog.addEventListener("click", (event) => {
-      if (event.target === dialog) dialog.close();
+  document
+    .querySelector("#territorio")
+    .addEventListener("click", (event) => {
+      const button = event.target.closest("[data-environment-detail]");
+      if (button) {
+        openEnvironmentDetail(button.dataset.environmentDetail, button);
+      }
     });
+
+  document
+    .querySelectorAll("[data-close-environment]")
+    .forEach((button) =>
+      button.addEventListener("click", closeEnvironmentDetail),
+    );
+
+  environmentDialog.addEventListener("close", () => {
+    environmentDialog._returnFocus?.focus();
+    environmentDialog._returnFocus = null;
   });
+
+  document
+    .querySelectorAll("[data-close-communication]")
+    .forEach((button) => button.addEventListener("click", closeCommunication));
+
+  communicationDialog.addEventListener("close", () => {
+    communicationDialog._returnFocus?.focus();
+    communicationDialog._returnFocus = null;
+  });
+
+  [searchDialog, environmentDialog, communicationDialog, cmsDialog].forEach(
+    (dialog) => {
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+    },
+  );
 
   const navToggle = document.querySelector(".nav-toggle");
   const mainNav = document.querySelector(".main-nav");
@@ -414,6 +532,20 @@
     .addEventListener("click", () => cmsDialog.showModal());
   document.querySelectorAll("[data-close-cms]").forEach((button) => {
     button.addEventListener("click", () => cmsDialog.close());
+  });
+
+  const contactForm = document.querySelector("#contact-form");
+  const contactFormStatus = document.querySelector("#contact-form-status");
+  contactForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (!contactForm.reportValidity()) return;
+
+    const name = contactForm.elements.name.value.trim();
+    contactFormStatus.textContent = `Grazie${name ? `, ${name}` : ""}. Il messaggio è stato acquisito nella simulazione del portale.`;
+    contactFormStatus.hidden = false;
+    contactForm.reset();
+    contactFormStatus.focus();
   });
 
   const backToTop = document.querySelector(".back-to-top");

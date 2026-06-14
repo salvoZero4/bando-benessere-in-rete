@@ -86,8 +86,9 @@
           <div class="hero__content">
             <p class="eyebrow">La comunità che si prende cura di sé</p>
             <h1 id="hero-title">
-              Il <span class="brush-word">benessere</span> è più vicino di
-              quanto pensi.
+              <span class="hero-title__line brush-word">Benessere</span>
+              <span class="hero-title__line hero-title__in">in</span>
+              <span class="hero-title__line">Comune</span>
             </h1>
             <p class="hero__lead">
               Attività, luoghi, servizi e persone di Altavilla Milicia, raccolti
@@ -141,7 +142,7 @@
             </div>
             <div class="hero-badge hero-badge--place">
               <span class="status-dot" aria-hidden="true"></span>
-              <span><strong>Luogo simbolo</strong>Belvedere Aldo Moro</span>
+              <span><strong>Luogo simbolo</strong>Belvedere Aldo Moro e i sette della scorta</span>
             </div>
           </div>
         </div>
@@ -270,7 +271,7 @@
               </span>
               <span class="area-card__title">Ambiente e natura</span>
               <span class="area-card__text"
-                >Mare, belvedere e luoghi naturali da conoscere.</span
+                >Riserva naturale, spiagge e iniziative sostenibili.</span
               >
               <span class="area-card__link"
                 >Scopri il territorio <span aria-hidden="true">→</span></span
@@ -308,7 +309,7 @@
           >
             <div>
               <p class="eyebrow">Vivi Altavilla</p>
-              <h2 id="eventi-title">Appuntamento confermato</h2>
+              <h2 id="eventi-title">Calendario eventi</h2>
             </div>
             <a
               class="text-link"
@@ -324,10 +325,6 @@
             id="event-list"
             aria-live="polite"
           ></div>
-          <p class="source-note">
-            Data ricavata dal bando “Benessere.comune”. Orario e luogo preciso
-            saranno aggiunti dopo la comunicazione ufficiale.
-          </p>
         </div>
       </section>
 
@@ -336,64 +333,193 @@
         id="territorio"
         aria-labelledby="territorio-title"
       >
-        <div class="shell territory__grid">
-          <div class="territory__visual">
-            <figure class="photo-placeholder photo-placeholder--territory">
-              <span class="photo-placeholder__label"
-                >Foto del Belvedere Aldo Moro</span
-              >
-              <small>Spazio riservato · assets/foto/belvedere.jpg</small>
-            </figure>
-          </div>
-
-          <div class="territory__content">
-            <p class="eyebrow">Mare, memoria e comunità</p>
-            <h2 id="territorio-title">
-              Altavilla Milicia,<br />affacciata sul Tirreno.
-            </h2>
+        <div class="shell">
+          <header class="territory__header">
+            <p class="eyebrow">Tra montagna, costa e comunità</p>
+            <h2 id="territorio-title">Ambiente e natura</h2>
             <p>
-              Il Belvedere Aldo Moro apre lo sguardo sulla costa da Cefalù a
-              Mongerbino. Poco distante, Piazza Matrice riunisce il Belvedere
-              Livatino, la Basilica e il Museo dei Quadretti Votivi.
+              Il patrimonio naturale di Altavilla Milicia unisce la riserva,
+              il litorale tirrenico e l'impegno quotidiano per un territorio
+              più pulito e consapevole.
             </p>
-            <ul class="feature-list" id="luoghi-altavilla">
-              <li>
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m5 12 4 4L19 6" />
-                </svg>
-                Belvedere Aldo Moro
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m5 12 4 4L19 6" />
-                </svg>
-                Belvedere Livatino
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m5 12 4 4L19 6" />
-                </svg>
-                Basilica Santuario Madonna della Milicia
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m5 12 4 4L19 6" />
-                </svg>
-                Museo dei Quadretti Votivi e Teatro Comunale
-              </li>
-            </ul>
-            <a
-              class="button button--light"
-              href="https://www.comune.altavillamilicia.pa.it/it/point-of-interests"
-              target="_blank"
-              rel="noopener"
-              >Consulta i luoghi del Comune <span aria-hidden="true">↗</span></a
-            >
-            <p class="source-note">
-              Informazioni ricavate dal portale istituzionale del Comune di
-              Altavilla Milicia.
-            </p>
-          </div>
+          </header>
+
+          <section
+            class="nature-block nature-block--reserve"
+            aria-labelledby="riserva-title"
+          >
+            <div class="nature-block__content">
+              <span class="nature-block__number">01</span>
+              <p class="eyebrow">Area protetta</p>
+              <h3 id="riserva-title">
+                Riserva Naturale Orientata Pizzo Cane, Pizzo Trigna e Grotta
+                Mazzamuto
+              </h3>
+              <p>
+                Un sistema di rilievi, valloni, boschi e ambienti rupestri. La
+                riserva custodisce macchia mediterranea, lecci, sughere e
+                habitat frequentati da rapaci e fauna selvatica.
+              </p>
+              <p>
+                Tra le cavità più importanti si trova Grotta Mazzamuto, di
+                interesse archeologico per i reperti che testimoniano la
+                presenza umana sin dalla preistoria. L'Eremo di San Felice è
+                considerato uno degli accessi storici all'area protetta.
+              </p>
+              <button
+                class="button button--light"
+                type="button"
+                data-environment-detail="reserve"
+                aria-haspopup="dialog"
+              >
+                Approfondisci la riserva <span aria-hidden="true">→</span>
+              </button>
+            </div>
+            <figure class="photo-placeholder photo-placeholder--reserve">
+              <span class="photo-placeholder__label"
+                >Foto della Riserva di Pizzo Cane, Pizzo Trigna e Grotta
+                Mazzamuto</span
+              >
+              <small>Spazio riservato · assets/foto/riserva.jpg</small>
+            </figure>
+          </section>
+
+          <section
+            class="nature-block nature-block--coast"
+            aria-labelledby="spiagge-title"
+          >
+            <div class="nature-block__heading">
+              <div>
+                <span class="nature-block__number">02</span>
+                <p class="eyebrow">La costa di Altavilla</p>
+                <h3 id="spiagge-title">Spiagge e accessi al mare</h3>
+              </div>
+              <p>
+                Quattro località balneari riconosciute lungo il litorale, tra
+                calette, ciottoli, sabbia e tratti attrezzati.
+              </p>
+            </div>
+
+            <div class="beach-grid">
+              <article class="beach-card">
+                <span class="beach-card__icon" aria-hidden="true">≈</span>
+                <p class="tag">Cala naturale</p>
+                <h4>Cala Sciabica</h4>
+                <p>
+                  La baia ai piedi di Capo Grosso, conosciuta anche come Torre
+                  Normanna o Ombelico di Venere.
+                </p>
+              </article>
+              <article class="beach-card">
+                <span class="beach-card__icon" aria-hidden="true">≈</span>
+                <p class="tag">Spiaggia</p>
+                <h4>Spiaggia Passi</h4>
+                <p>
+                  Tratto del litorale locale raggiunto anche dal servizio
+                  estivo di collegamento con le spiagge.
+                </p>
+              </article>
+              <article class="beach-card">
+                <span class="beach-card__icon" aria-hidden="true">≈</span>
+                <p class="tag">Lido</p>
+                <h4>Lido La Capannina</h4>
+                <p>
+                  Punto balneare attrezzato della costa di Altavilla Milicia,
+                  lungo il litorale della SS 113.
+                </p>
+              </article>
+              <article class="beach-card">
+                <span class="beach-card__icon" aria-hidden="true">≈</span>
+                <p class="tag">Spiaggia libera</p>
+                <h4>Spiaggia La Catena</h4>
+                <p>
+                  Spiaggia libera in zona Via Consolare, inserita nel tratto
+                  costiero di Altavilla Milicia.
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section
+            class="nature-block nature-block--sustainability"
+            aria-labelledby="sostenibilita-title"
+          >
+            <div class="nature-block__heading">
+              <div>
+                <span class="nature-block__number">03</span>
+                <p class="eyebrow">Cura del territorio</p>
+                <h3 id="sostenibilita-title">Iniziative per la sostenibilità</h3>
+              </div>
+              <p>
+                Servizi, volontariato e scuola lavorano insieme per diffondere
+                comportamenti responsabili e proteggere gli spazi comuni.
+              </p>
+            </div>
+
+            <div class="sustainability-grid">
+              <article class="sustainability-card">
+                <span class="sustainability-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 32 32">
+                    <path d="M10 8h12m-10-3h8l1 3H11l1-3Z" />
+                    <path d="m9 11 1 15h12l1-15M14 14v8m4-8v8" />
+                  </svg>
+                </span>
+                <h4>Raccolta differenziata</h4>
+                <p>
+                  Separazione di organico, secco, plastica, vetro e carta,
+                  servizi per ingombranti e conferimento nei punti di raccolta.
+                </p>
+                <button
+                  type="button"
+                  data-environment-detail="recycling"
+                  aria-haspopup="dialog"
+                >
+                  Consulta i servizi <span aria-hidden="true">→</span>
+                </button>
+              </article>
+              <article class="sustainability-card">
+                <span class="sustainability-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 32 32">
+                    <path d="M6 22c5 0 5-3 10-3s5 3 10 3M7 26h18" />
+                    <path d="M12 17V8h8v9M10 8h12M15 5h2" />
+                  </svg>
+                </span>
+                <h4>Attività Plastic Free</h4>
+                <p>
+                  Giornate di pulizia degli arenili e sensibilizzazione contro
+                  l'abbandono dei rifiuti, con volontari e comunità locale.
+                </p>
+                <button
+                  type="button"
+                  data-environment-detail="plastic-free"
+                  aria-haspopup="dialog"
+                >
+                  Scopri l'iniziativa <span aria-hidden="true">→</span>
+                </button>
+              </article>
+              <article class="sustainability-card">
+                <span class="sustainability-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 32 32">
+                    <path d="M5 9.5 16 5l11 4.5L16 14 5 9.5Z" />
+                    <path d="M9 12v7c4 3 10 3 14 0v-7M27 10v8" />
+                    <path d="M16 27c0-5 3-8 8-9-1 5-3 8-8 9Z" />
+                  </svg>
+                </span>
+                <h4>Educazione ambientale a scuola</h4>
+                <p>
+                  Progetti dell'Istituto Comprensivo come “Un alunno, un
+                  albero”, attività Plastic Free, riciclo e tutela del mare.
+                </p>
+                <button
+                  type="button"
+                  data-environment-detail="school"
+                  aria-haspopup="dialog"
+                >
+                  Leggi il progetto <span aria-hidden="true">→</span>
+                </button>
+              </article>
+            </div>
+          </section>
         </div>
       </section>
 
@@ -406,7 +532,7 @@
           <div class="section-heading section-heading--split">
             <div>
               <p class="eyebrow">Muoviti come vuoi</p>
-              <h2 id="movimento-title">Gli impianti sportivi comunali</h2>
+              <h2 id="movimento-title">Sport e movimento</h2>
             </div>
             <p>
               Strutture censite dal Comune per calcio, tennis, pallavolo,
@@ -477,11 +603,6 @@
               </div>
             </article>
           </div>
-          <p class="source-note">
-            Dotazioni e indirizzi ricavati dalle schede ufficiali del Comune.
-            Orari e modalità di utilizzo devono essere richiesti all'Ufficio
-            Cultura, Turismo e Sport.
-          </p>
         </div>
       </section>
 
@@ -492,7 +613,7 @@
           >
             <div>
               <p class="eyebrow">Informazioni che aiutano</p>
-              <h2 id="servizi-title">Salute e servizi utili</h2>
+              <h2 id="servizi-title">Salute e servizi</h2>
             </div>
             <button
               class="text-link text-link--button"
@@ -633,9 +754,7 @@
         <div class="shell community__grid">
           <div class="community__content">
             <p class="eyebrow">La forza delle persone</p>
-            <h2 id="associazioni-title">
-              Il benessere cresce quando diventa comune.
-            </h2>
+            <h2 id="associazioni-title">Associazioni</h2>
             <p>
               Le associazioni sportive, culturali e sociali sono una rete di
               competenze e relazioni. L'elenco ufficiale 2026 sarà pubblicato
@@ -746,6 +865,131 @@
     </main>
 
     <footer class="site-footer">
+      <section
+        class="contact-section"
+        id="contatti"
+        aria-labelledby="contact-title"
+      >
+        <div class="shell contact-section__grid">
+          <div class="contact-section__intro">
+            <p class="eyebrow">Parliamone insieme</p>
+            <h2 id="contact-title">Contatta il progetto</h2>
+            <p>
+              Hai una proposta, vuoi segnalare un'attività o chiedere
+              informazioni? Scrivici: il contributo della comunità aiuta il
+              portale a crescere e a raccontare meglio Altavilla Milicia.
+            </p>
+
+            <div class="contact-section__details">
+              <a
+                href="mailto:cultura@altavillamilicia.eu?subject=Informazioni%20Benessere%20In-Comune"
+              >
+                <span class="contact-section__detail-icon" aria-hidden="true">
+                  <svg viewBox="0 0 32 32">
+                    <rect x="4" y="7" width="24" height="18" rx="2" />
+                    <path d="m5 9 11 9L27 9" />
+                  </svg>
+                </span>
+                <span>
+                  <small>Email</small>
+                  cultura@altavillamilicia.eu
+                </span>
+              </a>
+              <a href="tel:091915441">
+                <span class="contact-section__detail-icon" aria-hidden="true">
+                  <svg viewBox="0 0 32 32">
+                    <path
+                      d="M9 5 5 8c1 10 9 18 19 19l3-4-6-5-3 3c-4-2-7-5-9-9l3-3-3-4Z"
+                    />
+                  </svg>
+                </span>
+                <span>
+                  <small>Telefono</small>
+                  091 915441
+                </span>
+              </a>
+            </div>
+          </div>
+
+          <form class="contact-form" id="contact-form">
+            <div class="contact-form__row">
+              <label for="contact-name">
+                Nome e cognome
+                <input
+                  id="contact-name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  required
+                />
+              </label>
+              <label for="contact-email">
+                Email
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                />
+              </label>
+            </div>
+
+            <label for="contact-topic">
+              Argomento
+              <select id="contact-topic" name="topic" required>
+                <option value="">Scegli un argomento</option>
+                <option value="informazioni">Richiesta di informazioni</option>
+                <option value="segnalazione">Segnalazione o aggiornamento</option>
+                <option value="proposta">Proposta per il territorio</option>
+                <option value="collaborazione">Collaborazione</option>
+              </select>
+            </label>
+
+            <label for="contact-message">
+              Messaggio
+              <textarea
+                id="contact-message"
+                name="message"
+                rows="5"
+                required
+              ></textarea>
+            </label>
+
+            <label class="contact-form__consent" for="contact-consent">
+              <input
+                id="contact-consent"
+                name="consent"
+                type="checkbox"
+                required
+              />
+              <span>
+                Acconsento all'utilizzo dei dati inseriti esclusivamente per
+                ricevere una risposta alla richiesta.
+              </span>
+            </label>
+
+            <div class="contact-form__footer">
+              <button class="button button--primary" type="submit">
+                Invia il messaggio <span aria-hidden="true">→</span>
+              </button>
+              <p class="contact-form__note">
+                Modulo dimostrativo: nessun dato viene trasmesso.
+              </p>
+            </div>
+
+            <p
+              class="contact-form__status"
+              id="contact-form-status"
+              role="status"
+              aria-live="polite"
+              tabindex="-1"
+              hidden
+            ></p>
+          </form>
+        </div>
+      </section>
+
       <section class="partner-strip" aria-labelledby="partner-title">
         <div class="shell">
           <h2 class="partner-strip__title" id="partner-title">
@@ -891,6 +1135,121 @@
       <div class="search-results" id="search-results" aria-live="polite">
         <p>Scrivi una parola per cercare tra eventi, servizi e notizie.</p>
       </div>
+    </dialog>
+
+    <dialog
+      class="environment-dialog"
+      id="environment-dialog"
+      aria-labelledby="environment-dialog-title"
+      aria-describedby="environment-dialog-subtitle"
+    >
+      <article class="environment-dialog__article">
+        <header class="environment-dialog__header">
+          <div>
+            <p class="environment-dialog__eyebrow" id="environment-dialog-area">
+              Ambiente e natura
+            </p>
+            <h2 id="environment-dialog-title"></h2>
+          </div>
+          <button
+            class="icon-button environment-dialog__close"
+            type="button"
+            data-close-environment="icon"
+            aria-label="Chiudi l'approfondimento"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </header>
+
+        <p
+          class="environment-dialog__subtitle"
+          id="environment-dialog-subtitle"
+        ></p>
+
+        <dl class="environment-dialog__meta">
+          <div>
+            <dt>Ambito</dt>
+            <dd id="environment-dialog-type"></dd>
+          </div>
+          <div>
+            <dt>Territorio</dt>
+            <dd>Altavilla Milicia</dd>
+          </div>
+        </dl>
+
+        <div
+          class="environment-dialog__content"
+          id="environment-dialog-content"
+        ></div>
+
+        <footer class="environment-dialog__footer">
+          <button
+            class="button environment-dialog__back"
+            type="button"
+            data-close-environment="back"
+          >
+            <span aria-hidden="true">←</span> Torna indietro
+          </button>
+        </footer>
+      </article>
+    </dialog>
+
+    <dialog
+      class="communication-dialog"
+      id="communication-dialog"
+      aria-labelledby="communication-title"
+      aria-describedby="communication-subtitle"
+    >
+      <article class="communication-dialog__article">
+        <header class="communication-dialog__header">
+          <div>
+            <h2 id="communication-title"></h2>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-communication="icon"
+            aria-label="Chiudi la comunicazione"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </header>
+
+        <p
+          class="communication-dialog__subtitle"
+          id="communication-subtitle"
+        ></p>
+
+        <dl class="communication-dialog__meta">
+          <div>
+            <dt>Tipologia</dt>
+            <dd id="communication-type"></dd>
+          </div>
+          <div>
+            <dt>Data</dt>
+            <dd id="communication-date"></dd>
+          </div>
+        </dl>
+
+        <div
+          class="communication-dialog__content"
+          id="communication-content"
+        ></div>
+
+        <footer class="communication-dialog__footer">
+          <button
+            class="button button--primary"
+            type="button"
+            data-close-communication="back"
+          >
+            <span aria-hidden="true">←</span> Torna indietro
+          </button>
+        </footer>
+      </article>
     </dialog>
 
     <dialog class="cms-dialog" id="cms-dialog" aria-labelledby="cms-title">
