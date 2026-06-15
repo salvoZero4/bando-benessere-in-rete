@@ -1,43 +1,29 @@
 # Benessere.comune - prototipo web
 
-Proposta statica e responsive per il concorso "Benessere.comune" della
-Consulta dello Sport di Altavilla Milicia.
+Proposta responsive per il concorso "Benessere.comune" della Consulta dello
+Sport di Altavilla Milicia.
 
 ## Apertura
 
-Aprire `index.html` con un browser moderno. Il progetto non richiede
-installazione, server, account o connessione internet.
+Aprire `index.html` con un browser moderno. Il progetto funziona direttamente
+con doppio clic e non richiede server, database, PHP o procedure di avvio.
 
 ## Struttura
 
-- `index.html`: contenuto e struttura semantica;
-- `css/styles.css`: design system, responsive design e modalità accessibili;
-- `js/data.js`: dati territoriali verificati separati dal layout;
-- `js/app.js`: ricerca, filtri, menu mobile e simulazione CMS.
-- `assets/loghi`: marchi degli organizzatori e dei partner ricavati dalla
-  copertina ufficiale fornita.
+- `index.html`: struttura semantica e contenitori delle sezioni;
+- `foto.html`: fotogallery con filtri per categoria;
+- `css/styles.css`: design responsive;
+- `js/app.js`: rendering, ricerca e interazioni;
+- `js/gallery.js`: rendering e filtri della fotogallery;
+- `data/`: un file di configurazione per ogni sezione;
+- `data/README.md`: istruzioni per aggiungere e rimuovere contenuti;
+- `assets/loghi`: marchi degli organizzatori e dei partner.
 
-## Funzioni dimostrate
+## Aggiornamento dei contenuti
 
-- sei aree obbligatorie del bando;
-- interfaccia responsive desktop, tablet e mobile;
-- ricerca trasversale;
-- filtri del calendario eventi;
-- schede di attività, servizi, associazioni e news;
-- simulazione di aggiornamento contenuti;
-- navigazione da tastiera e focus visibile;
-- supporto alla riduzione delle animazioni;
-- funzionamento interamente locale.
+Tutti i contenuti delle sezioni, degli appuntamenti, delle news e della
+fotogallery si modificano nei file della cartella `data`. Gli elenchi sono
+estendibili: aggiungendo o rimuovendo oggetti dagli array, la pagina adatta
+automaticamente card, numerazione, griglie, scorrimento e stati vuoti.
 
-## Nota sui contenuti
-
-Il layout e il codice sono originali. Nomi, indirizzi e contatti provengono dal
-bando, dal Comune di Altavilla Milicia e dall'ASP Palermo. Gli orari e i dati
-non disponibili non sono stati inventati. Gli spazi fotografici saranno
-completati con materiali autorizzati della Consulta o del Comune.
-
-## Aggiornamento dei dati
-
-Eventi, servizi, medici e news si modificano in `js/data.js`. Questa separazione
-costituisce il modello dati che, in una fase successiva, potrebbe essere
-collegato a un CMS senza riprogettare l'interfaccia.
+Non è necessario modificare HTML, CSS o JavaScript per aggiornare i contenuti.
