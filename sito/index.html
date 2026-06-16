@@ -9,7 +9,7 @@
     />
     <meta name="theme-color" content="#0b6656" />
     <title>Altavilla Milicia Benessere</title>
-    <link rel="stylesheet" href="css/styles.css?v=20260615-3" />
+    <link rel="stylesheet" href="css/styles.css?v=20260616-4" />
     <script src="data/hero.js" defer></script>
     <script src="data/aree.js" defer></script>
     <script src="data/appuntamenti.js" defer></script>
@@ -18,10 +18,11 @@
     <script src="data/salute-servizi.js" defer></script>
     <script src="data/associazioni.js" defer></script>
     <script src="data/news.js" defer></script>
+    <script src="data/gestione-news.js" defer></script>
     <script src="data/chiusura.js" defer></script>
     <script src="data/contatti.js" defer></script>
     <script src="data/partner.js" defer></script>
-    <script src="js/app.js?v=20260615-3" defer></script>
+    <script src="js/app.js?v=20260616-4" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#contenuto">Vai al contenuto principale</a>
@@ -75,7 +76,7 @@
           <a href="#movimento" data-scroll-to="movimento" aria-label="Sport e movimento">Sport</a>
           <a href="#associazioni" data-scroll-to="associazioni" aria-label="Associazioni sportive">Associazioni</a>
           <a href="#territorio" data-scroll-to="territorio">Ambiente</a>
-          <a href="foto.html">Foto</a>
+          <a href="gestione.html">Gestione</a>
           <button
             class="header-search"
             type="button"
@@ -202,7 +203,7 @@
               <li><a href="#movimento" data-scroll-to="movimento">Sport e movimento</a></li>
               <li><a href="#associazioni" data-scroll-to="associazioni">Associazioni sportive</a></li>
               <li><a href="#territorio" data-scroll-to="territorio">Ambiente</a></li>
-              <li><a href="foto.html">Fotogallery</a></li>
+              <li><a href="gestione.html">Area gestione</a></li>
             </ul>
           </div>
         </div>
@@ -302,6 +303,32 @@
         <div class="communication-dialog__content" id="communication-content"></div>
         <footer class="communication-dialog__footer">
           <button class="button button--primary" type="button" data-close-communication="back">
+            <span aria-hidden="true">←</span> Torna indietro
+          </button>
+        </footer>
+      </article>
+    </dialog>
+
+    <dialog
+      class="archive-dialog"
+      id="archive-dialog"
+      aria-labelledby="archive-dialog-title"
+      aria-describedby="archive-dialog-subtitle"
+    >
+      <article class="archive-dialog__article">
+        <header class="archive-dialog__header">
+          <div>
+            <p class="archive-dialog__eyebrow" id="archive-dialog-eyebrow"></p>
+            <h2 id="archive-dialog-title"></h2>
+          </div>
+          <button class="icon-button" type="button" data-close-archive aria-label="Chiudi l'archivio">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <p class="archive-dialog__subtitle" id="archive-dialog-subtitle"></p>
+        <div class="archive-list" id="archive-dialog-list"></div>
+        <footer class="archive-dialog__footer">
+          <button class="button button--primary" type="button" data-close-archive>
             <span aria-hidden="true">←</span> Torna indietro
           </button>
         </footer>

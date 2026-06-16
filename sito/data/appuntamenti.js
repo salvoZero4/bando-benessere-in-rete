@@ -3,8 +3,8 @@ window.siteContent.appointments = {
   "eyebrow": "Vivi Altavilla",
   "title": "Calendario ed eventi",
   "externalLink": {
-    "label": "Eventi del Comune",
-    "href": "https://www.comune.altavillamilicia.pa.it/it/events"
+    "label": "Eventi passati",
+    "href": ""
   },
   "emptyMessage": "Nessun appuntamento disponibile.",
   "items": [

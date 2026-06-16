@@ -18,7 +18,7 @@ window.siteContent.news = {
       "search": "bando concorso benessere comune consulta sport 10 giugno 2026"
     },
     {
-      "date": "Giugno 2026",
+      "date": "12 giugno 2026",
       "type": "Sport",
       "title": "Tre strutture comunali per lo sport",
       "description": "Stadio Santi Bucaro, Centro Tennis Altavilla e Palestra Comunale sono censiti dal Comune.",
@@ -30,7 +30,7 @@ window.siteContent.news = {
       "search": "sport stadio santi bucaro centro tennis palestra comunale"
     },
     {
-      "date": "Giugno 2026",
+      "date": "14 giugno 2026",
       "type": "Territorio",
       "title": "Belvedere, cultura e memoria",
       "description": "Aldo Moro e i sette della scorta, Livatino, la Basilica, il Museo dei Quadretti Votivi e il Teatro Comunale raccontano il territorio.",

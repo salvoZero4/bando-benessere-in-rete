@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Area gestione dimostrativa per il personale di Benessere in Comune."
+    />
+    <meta name="theme-color" content="#0b6656" />
+    <title>Area gestione | Altavilla Milicia Benessere</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260616-3" />
+    <script src="data/gestione-news.js" defer></script>
+    <script src="js/management.js?v=20260616-3" defer></script>
+  </head>
+  <body class="management-page">
+    <a class="skip-link" href="#management-content">Vai all'area gestione</a>
+
+    <header class="site-header" id="inizio">
+      <div class="shell site-header__inner">
+        <a
+          class="header-logos"
+          href="index.html"
+          aria-label="Organizzatori di Benessere in Comune, torna alla pagina principale"
+        >
+          <img class="header-logo header-logo--sport" src="assets/loghi/settimane-altavillesi-sport.png" alt="Settimane Altavillesi dello Sport" />
+          <img class="header-logo header-logo--comune" src="assets/loghi/comune-altavilla-milicia.png" alt="Comune di Altavilla Milicia" />
+          <img class="header-logo header-logo--yoga" src="assets/loghi/yoga-zone-sicilia.png" alt="Yoga Zone Sicilia A.P.S." />
+        </a>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu-principale">
+          <span class="sr-only">Apri il menu</span>
+          <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+
+        <nav class="main-nav" id="menu-principale" aria-label="Navigazione principale">
+          <a href="index.html#esplora">Esplora</a>
+          <a href="index.html#eventi" aria-label="Calendario ed eventi">Calendario</a>
+          <a href="index.html#news">Comunicazioni</a>
+          <a href="index.html#servizi" aria-label="Salute e servizi">Salute</a>
+          <a href="index.html#movimento" aria-label="Sport e movimento">Sport</a>
+          <a href="index.html#associazioni" aria-label="Associazioni sportive">Associazioni</a>
+          <a href="index.html#territorio">Ambiente</a>
+          <a href="gestione.html" aria-current="page">Gestione</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="management-content" aria-busy="true"></main>
+
+    <footer class="site-footer">
+      <div class="site-footer__main">
+        <div class="shell site-footer__grid">
+          <div>
+            <a class="brand brand--footer" href="index.html">
+              <svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M24 4C14.1 4 6 12.1 6 22c0 12.6 15.6 21.1 17.3 22a1.6 1.6 0 0 0 1.4 0C26.4 43.1 42 34.6 42 22 42 12.1 33.9 4 24 4Z" />
+                <path class="brand__mark-line" d="M13 25h7l3-9 4 16 3-7h5" />
+              </svg>
+              <span class="brand__text">
+                <span class="brand__name">Benessere <span>in</span> comune</span>
+                <span class="brand__place">Altavilla Milicia</span>
+              </span>
+            </a>
+            <p class="footer-description">Pannello dimostrativo per la gestione delle comunicazioni.</p>
+          </div>
+          <div>
+            <h2 class="footer-title">Esplora</h2>
+            <ul>
+              <li><a href="index.html#eventi">Calendario eventi</a></li>
+              <li><a href="index.html#news">Comunicazioni</a></li>
+              <li><a href="index.html#servizi">Salute e servizi</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="footer-title">Aree</h2>
+            <ul>
+              <li><a href="index.html#movimento">Sport e movimento</a></li>
+              <li><a href="index.html#associazioni">Associazioni sportive</a></li>
+              <li><a href="index.html#territorio">Ambiente</a></li>
+              <li><a href="gestione.html" aria-current="page">Area gestione</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="shell site-footer__bottom">
+          <span>Prototipo non istituzionale · Giugno 2026</span>
+          <span>Gestione simulata: nessun dato viene inviato a un server.</span>
+        </div>
+      </div>
+    </footer>
+
+    <dialog class="management-dialog" id="news-dialog" aria-labelledby="news-dialog-title">
+      <form class="management-dialog__article" id="news-form" method="dialog">
+        <header class="management-dialog__header">
+          <div>
+            <p class="eyebrow">Nuova comunicazione</p>
+            <h2 id="news-dialog-title">Aggiungi news</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-news-dialog aria-label="Chiudi il modulo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+
+        <div class="management-form-grid">
+          <label>
+            <span>Titolo</span>
+            <input name="title" type="text" maxlength="90" placeholder="Es. Nuovo laboratorio sportivo" required />
+          </label>
+          <label>
+            <span>Data pubblicazione</span>
+            <input name="date" type="date" required />
+          </label>
+          <label class="management-field--wide">
+            <span>Testo</span>
+            <textarea name="text" rows="6" maxlength="650" placeholder="Inserisci il contenuto della comunicazione..." required></textarea>
+          </label>
+          <label class="management-file-field management-field--wide">
+            <span>Immagine</span>
+            <input name="image" type="file" accept="image/*" />
+            <small>PNG, JPG o WebP. Nel prototipo l'immagine resta salvata solo in questo browser.</small>
+          </label>
+        </div>
+
+        <div class="management-preview" id="image-preview" hidden>
+          <span>Anteprima immagine</span>
+          <img alt="" />
+        </div>
+
+        <footer class="management-dialog__footer">
+          <button class="button button--ghost" type="button" data-close-news-dialog>Annulla</button>
+          <button class="button button--primary" type="submit" data-news-submit>Pubblica</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog class="management-dialog" id="event-dialog" aria-labelledby="event-dialog-title">
+      <form class="management-dialog__article" id="event-form" method="dialog">
+        <header class="management-dialog__header">
+          <div>
+            <p class="eyebrow">Nuovo appuntamento</p>
+            <h2 id="event-dialog-title">Aggiungi evento</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-event-dialog aria-label="Chiudi il modulo evento">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+
+        <div class="management-form-grid">
+          <label>
+            <span>Data</span>
+            <input name="date" type="date" required />
+          </label>
+          <label>
+            <span>Posizione</span>
+            <input name="place" type="text" maxlength="90" placeholder="Es. Belvedere Aldo Moro" required />
+          </label>
+          <label class="management-field--wide">
+            <span>Titolo</span>
+            <input name="title" type="text" maxlength="100" placeholder="Es. Camminata del benessere" required />
+          </label>
+          <label class="management-field--wide">
+            <span>Descrizione</span>
+            <textarea name="description" rows="5" maxlength="550" placeholder="Descrivi l'appuntamento..." required></textarea>
+          </label>
+        </div>
+
+        <footer class="management-dialog__footer">
+          <button class="button button--ghost" type="button" data-close-event-dialog>Annulla</button>
+          <button class="button button--primary" type="submit">Pubblica evento</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <button class="back-to-top" type="button" aria-label="Torna all'inizio della pagina" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6" /></svg>
+    </button>
+
+    <noscript>
+      <div class="noscript-message">Per utilizzare l'area gestione è necessario attivare JavaScript.</div>
+    </noscript>
+  </body>
+</html>

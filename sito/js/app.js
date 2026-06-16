@@ -77,6 +77,215 @@
     return `<p class="empty-state">${escapeHtml(message)}</p>`;
   }
 
+  const italianMonths = {
+    gennaio: 0,
+    febbraio: 1,
+    marzo: 2,
+    aprile: 3,
+    maggio: 4,
+    giugno: 5,
+    luglio: 6,
+    agosto: 7,
+    settembre: 8,
+    ottobre: 9,
+    novembre: 10,
+    dicembre: 11,
+  };
+
+  function comparableDate(value = "", fallback = "past", precision = "start") {
+    if (!value) return fallback === "future" ? Number.POSITIVE_INFINITY : 0;
+    const normalized = String(value).trim().toLocaleLowerCase("it");
+    const isoMatch = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (isoMatch) {
+      return new Date(`${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}T00:00:00`).getTime();
+    }
+
+    const longMatch = normalized.match(/^(\d{1,2})\s+([a-zà]+)\s+(\d{4})$/i);
+    if (longMatch && italianMonths[longMatch[2]] !== undefined) {
+      return new Date(
+        Number(longMatch[3]),
+        italianMonths[longMatch[2]],
+        Number(longMatch[1]),
+      ).getTime();
+    }
+
+    const monthMatch = normalized.match(/^([a-zà]+)\s+(\d{4})$/i);
+    if (monthMatch && italianMonths[monthMatch[1]] !== undefined) {
+      const month = italianMonths[monthMatch[1]];
+      const day = precision === "end" ? new Date(Number(monthMatch[2]), month + 1, 0).getDate() : 1;
+      return new Date(Number(monthMatch[2]), month, day).getTime();
+    }
+
+    const parsed = new Date(value).getTime();
+    if (!Number.isNaN(parsed)) return parsed;
+    return fallback === "future" ? Number.POSITIVE_INFINITY : 0;
+  }
+
+  function startOfToday() {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  }
+
+  function sortEventsAscending(items) {
+    return [...asArray(items)].sort(
+      (first, second) =>
+        comparableDate(first.date, "future") - comparableDate(second.date, "future"),
+    );
+  }
+
+  function sortNewsDescending(items) {
+    return [...asArray(items)].sort(
+      (first, second) =>
+        comparableDate(second.date, "past", "end") -
+        comparableDate(first.date, "past", "end"),
+    );
+  }
+
+  function splitEventsByDate(items) {
+    const today = startOfToday();
+    const future = [];
+    const past = [];
+    asArray(items).forEach((item) => {
+      const timestamp = comparableDate(item.date, "future");
+      if (timestamp < today) {
+        past.push(item);
+      } else {
+        future.push(item);
+      }
+    });
+    return {
+      future: sortEventsAscending(future),
+      past: sortEventsAscending(past).reverse(),
+    };
+  }
+
+  function formatStoredNewsDate(value = "") {
+    if (!value) return "";
+    const parsed = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(parsed.getTime())) return value;
+    return new Intl.DateTimeFormat("it-IT", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(parsed);
+  }
+
+  function readStoredManagementNews(managementData = {}) {
+    const key = managementData.storageKey;
+    if (!key) return [];
+    try {
+      const stored = window.localStorage.getItem(key);
+      return asArray(stored ? JSON.parse(stored) : []);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function normalizeNewsKey(item = {}) {
+    return String(item.title || "").trim().toLocaleLowerCase("it");
+  }
+
+  function managementItemToNews(item = {}) {
+    const text = item.text || item.description || "";
+    const date = formatStoredNewsDate(item.date);
+    return {
+      date,
+      type: item.type || "Comunicazione pubblicata",
+      title: item.title || "Nuova comunicazione",
+      description: text,
+      content: String(text)
+        .split(/\n+/)
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean),
+      search: `${item.title || ""} ${text} ${date}`,
+      source: "management",
+    };
+  }
+
+  function storedItemToAppointment(item = {}) {
+    const date = new Date(`${item.date}T00:00:00`);
+    const validDate = !Number.isNaN(date.getTime());
+    const day = validDate
+      ? new Intl.DateTimeFormat("it-IT", { day: "2-digit" }).format(date)
+      : "--";
+    const month = validDate
+      ? new Intl.DateTimeFormat("it-IT", { month: "short" })
+          .format(date)
+          .replace(".", "")
+      : "";
+
+    return {
+      date: item.date || "",
+      day,
+      month,
+      category: "gestione",
+      label: "Evento",
+      title: item.title || "Nuovo evento",
+      description: item.description || "",
+      time: "",
+      place: item.place || "Altavilla Milicia",
+      search: `${item.title || ""} ${item.description || ""} ${item.place || ""}`,
+      source: "management",
+    };
+  }
+
+  function newsWithManagedItems(newsData = {}, managementData = {}) {
+    const staticItems = asArray(newsData.items);
+    const storedNews = readStoredManagementNews(managementData);
+    const hasManagedArchive = Boolean(
+      managementData.storageKey &&
+        window.localStorage.getItem(managementData.storageKey),
+    );
+    const managedBaseKeys = new Set(asArray(managementData.items).map(normalizeNewsKey));
+    const managedKeys = new Set(
+      storedNews.map((item) => normalizeNewsKey(managementItemToNews(item))),
+    );
+
+    return {
+      ...newsData,
+      items: [
+        ...storedNews
+          .filter((item) => (item.status || "Pubblicata") === "Pubblicata")
+          .map(managementItemToNews),
+        ...staticItems.filter((item) => {
+          const key = normalizeNewsKey(item);
+          if (managedKeys.has(key)) return false;
+          if (hasManagedArchive && managedBaseKeys.has(key)) return false;
+          return true;
+        }),
+      ],
+    };
+  }
+
+  function appointmentsWithManagedItems(appointmentsData = {}, managementData = {}) {
+    const key = managementData.eventStorageKey;
+    if (!key) return appointmentsData;
+    let storedEvents = [];
+    try {
+      storedEvents = asArray(
+        window.localStorage.getItem(key)
+          ? JSON.parse(window.localStorage.getItem(key))
+          : [],
+      );
+    } catch (error) {
+      storedEvents = [];
+    }
+
+    return {
+      ...appointmentsData,
+      items: [...storedEvents.map(storedItemToAppointment), ...asArray(appointmentsData.items)],
+    };
+  }
+
+  function withEventArchive(appointmentsData = {}) {
+    const archive = splitEventsByDate(appointmentsData.items);
+    return {
+      ...appointmentsData,
+      archive,
+      items: archive.future,
+    };
+  }
+
   function loadData() {
     const data = window.siteContent || {};
     const missing = requiredDataKeys.filter((key) => !data[key]);
@@ -188,15 +397,14 @@
   }
 
   function renderAppointments(data) {
-    const items = asArray(data.items);
+    const archive = data.archive || { future: asArray(data.items), past: [] };
+    const items = asArray(archive.future);
     document.querySelector("#events-content").innerHTML = `
       <div class="section-heading section-heading--split section-heading--actions">
         <div><p class="eyebrow">${escapeHtml(data.eyebrow)}</p><h2 id="eventi-title">${escapeHtml(data.title)}</h2></div>
-        ${
-          data.externalLink?.href
-            ? `<a class="text-link" href="${escapeHtml(data.externalLink.href)}"${linkAttributes(data.externalLink.href)}>${escapeHtml(data.externalLink.label)} <span aria-hidden="true">↗</span></a>`
-            : ""
-        }
+        <button class="text-link text-link--button" type="button" data-open-event-archive>
+          Eventi passati <span aria-hidden="true">→</span>
+        </button>
       </div>
       <div class="event-grid${items.length === 1 ? " event-grid--single" : ""}" id="event-list" aria-live="polite">
         ${items.length ? items.map(eventTemplate).join("") : emptyState(data.emptyMessage)}
@@ -485,11 +693,14 @@
   }
 
   function renderNews(data) {
-    const items = asArray(data.items);
+    const items = sortNewsDescending(data.items);
+    data.items = items;
     document.querySelector("#news-content").innerHTML = `
       <div class="section-heading section-heading--split section-heading--actions">
         <div><p class="eyebrow">${escapeHtml(data.eyebrow)}</p><h2 id="news-title">${escapeHtml(data.title)}</h2></div>
-        <a class="text-link" href="#news-list" data-scroll-to="news-list">${escapeHtml(data.archiveLabel)} <span aria-hidden="true">→</span></a>
+        <button class="text-link text-link--button" type="button" data-open-news-archive>
+          ${escapeHtml(data.archiveLabel)} <span aria-hidden="true">→</span>
+        </button>
       </div>
       <div class="news-grid" id="news-list">
         ${
@@ -562,6 +773,12 @@
   }
 
   function renderAll(data) {
+    data.news = newsWithManagedItems(data.news, data.management);
+    data.appointments = appointmentsWithManagedItems(
+      data.appointments,
+      data.management,
+    );
+    data.appointments = withEventArchive(data.appointments);
     renderHero(data.hero);
     renderAreas(data.areas);
     renderAppointments(data.appointments);
@@ -633,6 +850,76 @@
     const searchDialog = document.querySelector("#search-dialog");
     const environmentDialog = document.querySelector("#environment-dialog");
     const communicationDialog = document.querySelector("#communication-dialog");
+    const archiveDialog = document.querySelector("#archive-dialog");
+
+    function archiveEventTemplate(item) {
+      return `
+        <article class="archive-card archive-card--event">
+          <time datetime="${escapeHtml(item.date)}">${escapeHtml(formatStoredNewsDate(item.date) || item.date)}</time>
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+          <small>${escapeHtml(item.place)}</small>
+        </article>`;
+    }
+
+    function archiveNewsTemplate(item, index) {
+      return `
+        <article class="archive-card">
+          <span>${escapeHtml(item.type)} · ${escapeHtml(item.date)}</span>
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+          <button class="news-card__action" type="button" data-archive-news-index="${index}">Leggi la comunicazione <span aria-hidden="true">→</span></button>
+        </article>`;
+    }
+
+    function openArchive(config = {}, trigger) {
+      archiveDialog.querySelector("#archive-dialog-eyebrow").textContent =
+        config.eyebrow || "";
+      archiveDialog.querySelector("#archive-dialog-title").textContent =
+        config.title || "";
+      archiveDialog.querySelector("#archive-dialog-subtitle").textContent =
+        config.subtitle || "";
+      archiveDialog.querySelector("#archive-dialog-list").innerHTML =
+        config.content || emptyState(config.emptyMessage || "Nessun contenuto disponibile.");
+      archiveDialog._returnFocus = trigger;
+      archiveDialog.showModal();
+    }
+
+    function closeArchive() {
+      if (archiveDialog.open) archiveDialog.close();
+    }
+
+    function openEventArchive(trigger) {
+      const pastEvents = asArray(data.appointments.archive?.past);
+      openArchive(
+        {
+          eyebrow: "Archivio calendario",
+          title: "Eventi passati",
+          subtitle:
+            "Gli appuntamenti già trascorsi sono raccolti qui, separati dal calendario degli eventi imminenti.",
+          content: pastEvents.length
+            ? pastEvents.map(archiveEventTemplate).join("")
+            : emptyState("Non sono presenti eventi passati."),
+        },
+        trigger,
+      );
+    }
+
+    function openNewsArchive(trigger) {
+      const news = sortNewsDescending(data.news.items);
+      openArchive(
+        {
+          eyebrow: "Archivio comunicazioni",
+          title: "Comunicazioni",
+          subtitle:
+            "Le comunicazioni sono ordinate dalla più recente alla meno recente.",
+          content: news.length
+            ? news.map(archiveNewsTemplate).join("")
+            : emptyState(data.news.emptyMessage),
+        },
+        trigger,
+      );
+    }
 
     function performSearch(term) {
       const container = document.querySelector("#search-results");
@@ -812,6 +1099,7 @@
 
     document.addEventListener("click", (event) => {
       const scrollLink = event.target.closest("[data-scroll-to]");
+      const archiveNewsButton = event.target.closest("[data-archive-news-index]");
       if (scrollLink) {
         const targetId = scrollLink.dataset.scrollTo;
         if (document.getElementById(targetId)) {
@@ -823,6 +1111,21 @@
       if (event.target.closest("[data-scroll-top]")) {
         event.preventDefault();
         scrollToTop();
+      }
+      if (event.target.closest("[data-open-event-archive]")) {
+        event.preventDefault();
+        openEventArchive(event.target.closest("[data-open-event-archive]"));
+      }
+      if (event.target.closest("[data-open-news-archive]")) {
+        event.preventDefault();
+        openNewsArchive(event.target.closest("[data-open-news-archive]"));
+      }
+      if (archiveNewsButton) {
+        closeArchive();
+        openCommunication(
+          Number.parseInt(archiveNewsButton.dataset.archiveNewsIndex, 10),
+          archiveNewsButton,
+        );
       }
     });
 
@@ -851,6 +1154,9 @@
       .forEach((button) =>
         button.addEventListener("click", () => communicationDialog.close()),
       );
+    document
+      .querySelectorAll("[data-close-archive]")
+      .forEach((button) => button.addEventListener("click", closeArchive));
     environmentDialog.addEventListener("close", () => {
       environmentDialog._returnFocus?.focus();
       environmentDialog._returnFocus = null;
@@ -859,7 +1165,11 @@
       communicationDialog._returnFocus?.focus();
       communicationDialog._returnFocus = null;
     });
-    [searchDialog, environmentDialog, communicationDialog].forEach((dialog) => {
+    archiveDialog.addEventListener("close", () => {
+      archiveDialog._returnFocus?.focus();
+      archiveDialog._returnFocus = null;
+    });
+    [searchDialog, environmentDialog, communicationDialog, archiveDialog].forEach((dialog) => {
       dialog.addEventListener("click", (event) => {
         if (event.target === dialog) dialog.close();
       });
