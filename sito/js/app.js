@@ -77,6 +77,51 @@
     return `<p class="empty-state">${escapeHtml(message)}</p>`;
   }
 
+  function imageData(image, fallback = {}) {
+    if (typeof image === "string") {
+      return { src: image, alt: fallback.alt || "" };
+    }
+    return {
+      src: image?.src || fallback.src || "",
+      alt: image?.alt || fallback.alt || "",
+      position: image?.position || fallback.position || "center",
+    };
+  }
+
+  function contentMedia(image, label, fileName, className = "") {
+    const media = imageData(image);
+    return `
+      <div class="content-media ${escapeHtml(className)}">
+        <div class="content-media__placeholder" aria-hidden="true">
+          <span>${escapeHtml(label)}</span>
+          <small>${escapeHtml(fileName || media.src)}</small>
+        </div>
+        ${
+          media.src
+            ? `<img src="${escapeHtml(media.src)}" alt="${escapeHtml(media.alt || label)}" loading="lazy" style="object-position:${escapeHtml(media.position)}" data-content-image />`
+            : ""
+        }
+      </div>`;
+  }
+
+  function bindContentImages(container = document) {
+    container.querySelectorAll("[data-content-image]").forEach((image) => {
+      const hideBrokenImage = () => {
+        image.hidden = true;
+      };
+
+      image.addEventListener(
+        "error",
+        hideBrokenImage,
+        { once: true },
+      );
+
+      if (image.complete && image.naturalWidth === 0) {
+        hideBrokenImage();
+      }
+    });
+  }
+
   const italianMonths = {
     gennaio: 0,
     febbraio: 1,
@@ -188,6 +233,9 @@
   function managementItemToNews(item = {}) {
     const text = item.text || item.description || "";
     const date = formatStoredNewsDate(item.date);
+    const managedImage = imageData(item.image, {
+      alt: `Immagine della comunicazione ${item.title || ""}`,
+    });
     return {
       date,
       type: item.type || "Comunicazione pubblicata",
@@ -198,6 +246,7 @@
         .map((paragraph) => paragraph.trim())
         .filter(Boolean),
       search: `${item.title || ""} ${text} ${date}`,
+      image: managedImage.src ? managedImage : null,
       source: "management",
     };
   }
@@ -225,6 +274,13 @@
       time: "",
       place: item.place || "Altavilla Milicia",
       search: `${item.title || ""} ${item.description || ""} ${item.place || ""}`,
+      attachment: item.attachmentData
+        ? {
+            src: item.attachmentData,
+            name: item.attachmentName || "documento",
+            type: item.attachmentType || "application/octet-stream",
+          }
+        : null,
       source: "management",
     };
   }
@@ -237,14 +293,26 @@
         window.localStorage.getItem(managementData.storageKey),
     );
     const managedBaseKeys = new Set(asArray(managementData.items).map(normalizeNewsKey));
+    const staticItemsByKey = new Map(
+      staticItems.map((item) => [normalizeNewsKey(item), item]),
+    );
+    const normalizedStoredNews = storedNews.map((item) => {
+      const fallback = staticItemsByKey.get(normalizeNewsKey(item)) || {};
+      return {
+        ...item,
+        image: item.imageRemoved ? "" : item.image || fallback.image || "",
+      };
+    });
     const managedKeys = new Set(
-      storedNews.map((item) => normalizeNewsKey(managementItemToNews(item))),
+      normalizedStoredNews.map((item) =>
+        normalizeNewsKey(managementItemToNews(item)),
+      ),
     );
 
     return {
       ...newsData,
       items: [
-        ...storedNews
+        ...normalizedStoredNews
           .filter((item) => (item.status || "Pubblicata") === "Pubblicata")
           .map(managementItemToNews),
         ...staticItems.filter((item) => {
@@ -327,10 +395,16 @@
         </div>
       </div>
       <div class="hero__visual">
-        <figure class="photo-placeholder photo-placeholder--hero">
-          <span class="photo-placeholder__label">${escapeHtml(data.photo?.label)}</span>
-          <small>Spazio riservato · ${escapeHtml(data.photo?.file)}</small>
-        </figure>
+        ${contentMedia(
+          {
+            src: data.photo?.file,
+            alt: data.photo?.label,
+            position: data.photo?.position || "center",
+          },
+          data.photo?.label,
+          data.photo?.file,
+          "photo-placeholder photo-placeholder--hero",
+        )}
         ${badges
           .map(
             (badge) => `
@@ -342,9 +416,10 @@
                 }
                 <span><strong>${escapeHtml(badge.label)}</strong>${escapeHtml(badge.text)}</span>
               </div>`,
-          )
-          .join("")}
+            )
+            .join("")}
       </div>`;
+    bindContentImages(document.querySelector("#hero-content"));
   }
 
   function renderAreas(data) {
@@ -374,7 +449,7 @@
       </div>`;
   }
 
-  function eventTemplate(event) {
+  function eventTemplate(event, index) {
     return `
       <article class="event-card">
         <time class="event-date" datetime="${escapeHtml(event.date)}">
@@ -392,18 +467,21 @@
             }
             <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>${escapeHtml(event.place)}</span>
           </div>
+          <button class="news-card__action" type="button" data-event-index="${index}" aria-haspopup="dialog">
+            Apri evento <span aria-hidden="true">→</span>
+          </button>
         </div>
       </article>`;
   }
 
   function renderAppointments(data) {
     const archive = data.archive || { future: asArray(data.items), past: [] };
-    const items = asArray(archive.future);
+    const items = asArray(archive.future).slice(0, 3);
     document.querySelector("#events-content").innerHTML = `
       <div class="section-heading section-heading--split section-heading--actions">
         <div><p class="eyebrow">${escapeHtml(data.eyebrow)}</p><h2 id="eventi-title">${escapeHtml(data.title)}</h2></div>
         <button class="text-link text-link--button" type="button" data-open-event-archive>
-          Eventi passati <span aria-hidden="true">→</span>
+          ${escapeHtml(data.externalLink?.label || "Tutti gli eventi")} <span aria-hidden="true">→</span>
         </button>
       </div>
       <div class="event-grid${items.length === 1 ? " event-grid--single" : ""}" id="event-list" aria-live="polite">
@@ -435,10 +513,16 @@
               : ""
           }
         </div>
-        <figure class="photo-placeholder photo-placeholder--reserve">
-          <span class="photo-placeholder__label">${escapeHtml(reserve.photo?.label)}</span>
-          <small>Spazio riservato · ${escapeHtml(reserve.photo?.file)}</small>
-        </figure>
+        ${contentMedia(
+          {
+            src: reserve.photo?.file,
+            alt: reserve.photo?.label,
+            position: reserve.photo?.position || "center",
+          },
+          reserve.photo?.label,
+          reserve.photo?.file,
+          "photo-placeholder photo-placeholder--reserve",
+        )}
       </section>
       <section class="nature-block nature-block--coast" aria-labelledby="spiagge-title">
         <div class="nature-block__heading">
@@ -450,7 +534,15 @@
             beaches.length
               ? beaches
                   .map(
-                    (item) => `<article class="beach-card"><span class="beach-card__icon" aria-hidden="true">≈</span><p class="tag">${escapeHtml(item.type)}</p><h4>${escapeHtml(item.title)}</h4><p>${escapeHtml(item.description)}</p></article>`,
+                    (item) => `
+                      <article class="beach-card">
+                        ${contentMedia(item.image, `Foto ${item.title}`, item.image?.src, "beach-card__media")}
+                        <div class="beach-card__body">
+                          <p class="tag">${escapeHtml(item.type)}</p>
+                          <h4>${escapeHtml(item.title)}</h4>
+                          <p>${escapeHtml(item.description)}</p>
+                        </div>
+                      </article>`,
                   )
                   .join("")
               : emptyState(coast.emptyMessage)
@@ -483,6 +575,7 @@
           }
         </div>
       </section>`;
+    bindContentImages(document.querySelector("#environment-content"));
   }
 
   function renderSport(data) {
@@ -499,7 +592,12 @@
                 .map(
                   (item) => `
                     <article class="activity-card activity-card--${safeToken(item.variant)}">
-                      <div class="activity-card__art photo-placeholder"><span class="photo-placeholder__label">${escapeHtml(item.photoLabel)}</span><small>${escapeHtml(item.photoFile)}</small></div>
+                      ${contentMedia(
+                        { src: item.photoFile, alt: item.photoLabel },
+                        item.photoLabel,
+                        item.photoFile,
+                        "activity-card__art",
+                      )}
                       <div class="activity-card__body">
                         <span class="tag">${escapeHtml(item.tag)}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p>
                         <a href="${escapeHtml(item.href)}"${linkAttributes(item.href)}>${escapeHtml(item.action)} <span aria-hidden="true">${String(item.href).startsWith("http") ? "↗" : "→"}</span></a>
@@ -510,6 +608,7 @@
             : emptyState(data.emptyMessage)
         }
       </div>`;
+    bindContentImages(document.querySelector("#sport-content"));
   }
 
   function serviceTemplate(service) {
@@ -601,62 +700,31 @@
   function renderAssociations(data) {
     const items = asArray(data.items);
 
-    function contactButton(type, value) {
-      const isPhone = type === "phone";
-      const label = isPhone ? "Chiama" : "Invia email";
-      const unavailableLabel = isPhone
-        ? "Telefono non pubblicato"
-        : "Email non pubblicata";
-
-      if (!value) {
-        return `<span class="association-contact association-contact--disabled"><span class="association-contact__icon" aria-hidden="true">${icons[type]}</span>${unavailableLabel}</span>`;
-      }
-
-      const href = isPhone
-        ? `tel:${String(value).replace(/[^+\d]/g, "")}`
-        : `mailto:${value}`;
-      return `<a class="association-contact" href="${escapeHtml(href)}"><span class="association-contact__icon" aria-hidden="true">${icons[type]}</span>${label}</a>`;
-    }
-
-    function associationTemplate(item) {
+    function associationTemplate(item, index) {
       const disciplines = asArray(item.disciplines);
-      const image = item.image || {};
 
       return `
         <article class="association-card">
           <div class="association-card__media">
             <div class="association-card__placeholder" aria-hidden="true">
               <span>${icons.sport}</span>
-              <small>Immagine da inserire</small>
+              <small>Logo associazione</small>
             </div>
             <img
-              src="${escapeHtml(image.src)}"
-              alt="${escapeHtml(image.alt)}"
+              class="${item.logoFit === "cover" ? "association-card__logo--cover" : ""}"
+              src="${escapeHtml(item.logo)}"
+              alt="Logo ${escapeHtml(item.name)}"
               loading="lazy"
-              style="object-position: ${escapeHtml(image.position || "center")}"
-              data-association-image
-              hidden
+              data-association-logo
             />
           </div>
           <div class="association-card__body">
+            <span class="tag">Associazione sportiva</span>
             <h3>${escapeHtml(item.name)}</h3>
-            <div class="association-card__detail">
-              <span>Affiliazione</span>
-              <strong>${escapeHtml(item.affiliation)}</strong>
-            </div>
-            <div class="association-card__detail">
-              <span>Discipline praticate</span>
-              <ul>
-                ${disciplines.map((discipline) => `<li>${escapeHtml(discipline)}</li>`).join("")}
-              </ul>
-            </div>
-            <p>${escapeHtml(item.description)}</p>
-          </div>
-          <div class="association-card__footer">
-            <div class="association-card__contacts">
-              ${contactButton("phone", item.phone)}
-              ${contactButton("email", item.email)}
-            </div>
+            <p class="association-card__disciplines">${escapeHtml(disciplines.join(" · "))}</p>
+            <button class="association-card__action" type="button" data-association-index="${index}" aria-haspopup="dialog">
+              Apri scheda <span aria-hidden="true">→</span>
+            </button>
           </div>
         </article>`;
     }
@@ -672,28 +740,22 @@
         </div>
       </div>
       <p class="association-scroll-hint">${escapeHtml(data.hint)} <span aria-hidden="true">→</span></p>
-      <div class="association-grid" tabindex="0" role="region" aria-label="${escapeHtml(data.ariaLabel)}">
+      <div class="association-grid" id="association-list" tabindex="0" role="region" aria-label="${escapeHtml(data.ariaLabel)}">
         ${items.length ? items.map(associationTemplate).join("") : emptyState(data.emptyMessage)}
       </div>`;
 
     document
-      .querySelectorAll("[data-association-image]")
+      .querySelectorAll("[data-association-logo]")
       .forEach((image) => {
-        const showImage = () => {
-          if (image.naturalWidth > 0) image.hidden = false;
-        };
-
-        image.addEventListener("load", showImage, { once: true });
         image.addEventListener("error", () => {
           image.hidden = true;
         }, { once: true });
-
-        if (image.complete) showImage();
       });
   }
 
   function renderNews(data) {
     const items = sortNewsDescending(data.items);
+    const visibleItems = items.slice(0, 3);
     data.items = items;
     document.querySelector("#news-content").innerHTML = `
       <div class="section-heading section-heading--split section-heading--actions">
@@ -704,20 +766,33 @@
       </div>
       <div class="news-grid" id="news-list">
         ${
-          items.length
-            ? items
+          visibleItems.length
+            ? visibleItems
                 .map(
                   (item, index) => `
-                    <article class="news-card">
-                      <span class="news-card__meta">${escapeHtml(item.type)} · ${escapeHtml(item.date)}</span>
-                      <h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p>
-                      <button class="news-card__action" type="button" data-news-index="${index}" aria-haspopup="dialog">Leggi la comunicazione <span aria-hidden="true">→</span></button>
+                    <article class="news-card${imageData(item.image).src ? "" : " news-card--no-image"}">
+                      ${
+                        imageData(item.image).src
+                          ? contentMedia(
+                              item.image,
+                              `Immagine ${item.title}`,
+                              imageData(item.image).src,
+                              "news-card__media",
+                            )
+                          : ""
+                      }
+                      <div class="news-card__body">
+                        <span class="news-card__meta">${escapeHtml(item.type)} · ${escapeHtml(item.date)}</span>
+                        <h3>${escapeHtml(item.title)}</h3><p class="news-card__description">${escapeHtml(item.description)}</p>
+                        <button class="news-card__action" type="button" data-news-index="${index}" aria-haspopup="dialog">Leggi la comunicazione <span aria-hidden="true">→</span></button>
+                      </div>
                     </article>`,
                 )
                 .join("")
             : emptyState(data.emptyMessage)
         }
       </div>`;
+    bindContentImages(document.querySelector("#news-content"));
   }
 
   function renderClosing(data) {
@@ -850,15 +925,105 @@
     const searchDialog = document.querySelector("#search-dialog");
     const environmentDialog = document.querySelector("#environment-dialog");
     const communicationDialog = document.querySelector("#communication-dialog");
+    const eventDetailDialog = document.querySelector("#event-detail-dialog");
     const archiveDialog = document.querySelector("#archive-dialog");
+    const associationDialog = document.querySelector("#association-dialog");
 
-    function archiveEventTemplate(item) {
+    function associationContactTemplate(type, value) {
+      if (!value) return "";
+      const settings = {
+        phone: {
+          href: `tel:${String(value).replace(/[^+\d]/g, "")}`,
+          label: "Chiama",
+          icon: icons.phone,
+        },
+        email: {
+          href: `mailto:${value}`,
+          label: "Invia email",
+          icon: icons.email,
+        },
+        web: {
+          href: value,
+          label: "Sito web",
+          icon: icons.website,
+        },
+      };
+      const contact = settings[type];
+      if (!contact) return "";
+      return `
+        <a class="association-dialog__contact" href="${escapeHtml(contact.href)}"${linkAttributes(contact.href)}>
+          <span aria-hidden="true">${contact.icon}</span>
+          ${contact.label}
+        </a>`;
+    }
+
+    function openAssociation(index, trigger) {
+      const item = asArray(data.associations.items)[index];
+      if (!item) return;
+      const photo = associationDialog.querySelector("#association-dialog-photo");
+      const photoPlaceholder = associationDialog.querySelector(
+        ".association-dialog__photo span",
+      );
+      const associationPhoto = item.image || {};
+      associationDialog.querySelector("#association-dialog-title").textContent =
+        item.name;
+      associationDialog.querySelector(
+        "#association-dialog-affiliation",
+      ).textContent = item.affiliation || "Affiliazione non indicata";
+      associationDialog
+        .querySelector("#association-dialog-disciplines")
+        .replaceChildren(
+          ...asArray(item.disciplines).map((discipline) => {
+            const element = document.createElement("li");
+            element.textContent = discipline;
+            return element;
+          }),
+        );
+      associationDialog.querySelector(
+        "#association-dialog-description",
+      ).textContent = item.description || "";
+      associationDialog.querySelector("#association-dialog-contacts").innerHTML =
+        [
+          associationContactTemplate("phone", item.phone),
+          associationContactTemplate("email", item.email),
+          associationContactTemplate("web", item.web),
+        ].join("");
+
+      photoPlaceholder.innerHTML = icons.sport;
+      photo.hidden = true;
+      photo.removeAttribute("src");
+      photo.alt = associationPhoto.alt || `Foto dell'associazione ${item.name}`;
+      photo.style.objectPosition = associationPhoto.position || "center";
+      if (associationPhoto.src) {
+        photo.addEventListener(
+          "load",
+          () => {
+            photo.hidden = false;
+          },
+          { once: true },
+        );
+        photo.addEventListener(
+          "error",
+          () => {
+            photo.hidden = true;
+          },
+          { once: true },
+        );
+        photo.src = associationPhoto.src;
+      }
+
+      associationDialog._returnFocus = trigger;
+      associationDialog.showModal();
+    }
+
+    function archiveEventTemplate(item, index, group) {
       return `
         <article class="archive-card archive-card--event">
           <time datetime="${escapeHtml(item.date)}">${escapeHtml(formatStoredNewsDate(item.date) || item.date)}</time>
           <h3>${escapeHtml(item.title)}</h3>
           <p>${escapeHtml(item.description)}</p>
           <small>${escapeHtml(item.place)}</small>
+          <button class="news-card__action" type="button" data-archive-event-index="${index}" data-archive-event-group="${escapeHtml(group)}">Apri evento <span aria-hidden="true">→</span></button>
         </article>`;
     }
 
@@ -872,15 +1037,63 @@
         </article>`;
     }
 
+    function archiveSearchText(item = {}) {
+      return [
+        item.title,
+        item.description,
+        item.type,
+        item.date,
+        item.place,
+        item.label,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase("it");
+    }
+
+    function normalizedArchiveTerm(term = "") {
+      return String(term)
+        .trim()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase("it");
+    }
+
     function openArchive(config = {}, trigger) {
+      const searchInput = archiveDialog.querySelector("#archive-search-input");
+      const searchStatus = archiveDialog.querySelector(
+        "#archive-search-status",
+      );
+      const archiveList = archiveDialog.querySelector("#archive-dialog-list");
+
       archiveDialog.querySelector("#archive-dialog-eyebrow").textContent =
         config.eyebrow || "";
       archiveDialog.querySelector("#archive-dialog-title").textContent =
         config.title || "";
       archiveDialog.querySelector("#archive-dialog-subtitle").textContent =
         config.subtitle || "";
-      archiveDialog.querySelector("#archive-dialog-list").innerHTML =
-        config.content || emptyState(config.emptyMessage || "Nessun contenuto disponibile.");
+      searchInput.value = "";
+      searchInput.placeholder =
+        config.searchPlaceholder || "Cerca nell'archivio";
+      archiveDialog._renderArchive = (term = "") => {
+        const result = config.render
+          ? config.render(normalizedArchiveTerm(term))
+          : {
+              content:
+                config.content ||
+                emptyState(
+                  config.emptyMessage || "Nessun contenuto disponibile.",
+                ),
+              count: 0,
+            };
+        archiveList.innerHTML = result.content;
+        searchStatus.textContent = term.trim()
+          ? `${result.count} ${result.count === 1 ? "risultato trovato" : "risultati trovati"}`
+          : "";
+      };
+      archiveDialog._renderArchive();
       archiveDialog._returnFocus = trigger;
       archiveDialog.showModal();
     }
@@ -890,16 +1103,64 @@
     }
 
     function openEventArchive(trigger) {
+      const futureEvents = asArray(data.appointments.archive?.future).slice(3);
       const pastEvents = asArray(data.appointments.archive?.past);
       openArchive(
         {
           eyebrow: "Archivio calendario",
-          title: "Eventi passati",
+          title: "Eventi",
           subtitle:
-            "Gli appuntamenti già trascorsi sono raccolti qui, separati dal calendario degli eventi imminenti.",
-          content: pastEvents.length
-            ? pastEvents.map(archiveEventTemplate).join("")
-            : emptyState("Non sono presenti eventi passati."),
+            "Consulta gli altri appuntamenti futuri e gli eventi già trascorsi.",
+          searchPlaceholder: "Cerca evento, luogo o data",
+          render: (term) => {
+            const futureMatches = futureEvents
+              .map((item, index) => ({ item, index }))
+              .filter(({ item }) => !term || archiveSearchText(item).includes(term));
+            const pastMatches = pastEvents
+              .map((item, index) => ({ item, index }))
+              .filter(({ item }) => !term || archiveSearchText(item).includes(term));
+            const count = futureMatches.length + pastMatches.length;
+            return {
+              count,
+              content: `
+                <section class="archive-group" aria-labelledby="future-events-title">
+                  <h3 id="future-events-title">Eventi futuri</h3>
+                  <div class="archive-group__list">
+                    ${
+                      futureMatches.length
+                        ? futureMatches
+                            .map(({ item, index }) =>
+                              archiveEventTemplate(item, index, "future"),
+                            )
+                            .join("")
+                        : emptyState(
+                            term
+                              ? "Nessun evento futuro corrisponde alla ricerca."
+                              : "Non sono presenti altri eventi futuri.",
+                          )
+                    }
+                  </div>
+                </section>
+                <section class="archive-group" aria-labelledby="past-events-title">
+                  <h3 id="past-events-title">Eventi passati</h3>
+                  <div class="archive-group__list">
+                    ${
+                      pastMatches.length
+                        ? pastMatches
+                            .map(({ item, index }) =>
+                              archiveEventTemplate(item, index, "past"),
+                            )
+                            .join("")
+                        : emptyState(
+                            term
+                              ? "Nessun evento passato corrisponde alla ricerca."
+                              : "Non sono presenti eventi passati.",
+                          )
+                    }
+                  </div>
+                </section>`,
+            };
+          },
         },
         trigger,
       );
@@ -907,15 +1168,31 @@
 
     function openNewsArchive(trigger) {
       const news = sortNewsDescending(data.news.items);
+      const archivedNews = news.slice(3);
       openArchive(
         {
           eyebrow: "Archivio comunicazioni",
           title: "Comunicazioni",
           subtitle:
-            "Le comunicazioni sono ordinate dalla più recente alla meno recente.",
-          content: news.length
-            ? news.map(archiveNewsTemplate).join("")
-            : emptyState(data.news.emptyMessage),
+            "Qui trovi le comunicazioni precedenti, ordinate dalla più recente alla meno recente.",
+          searchPlaceholder: "Cerca comunicazione, tipologia o data",
+          render: (term) => {
+            const matches = archivedNews
+              .map((item, index) => ({ item, index: index + 3 }))
+              .filter(({ item }) => !term || archiveSearchText(item).includes(term));
+            return {
+              count: matches.length,
+              content: matches.length
+                ? matches
+                    .map(({ item, index }) => archiveNewsTemplate(item, index))
+                    .join("")
+                : emptyState(
+                    term
+                      ? "Nessuna comunicazione corrisponde alla ricerca."
+                      : "Non sono presenti altre comunicazioni in archivio.",
+                  ),
+            };
+          },
         },
         trigger,
       );
@@ -957,6 +1234,13 @@
     function openCommunication(index, trigger) {
       const item = asArray(data.news.items)[index];
       if (!item) return;
+      const media = imageData(item.image);
+      const mediaContainer = communicationDialog.querySelector(
+        "#communication-media",
+      );
+      const communicationImage = communicationDialog.querySelector(
+        "#communication-image",
+      );
       communicationDialog.querySelector("#communication-title").textContent =
         item.title;
       communicationDialog.querySelector(
@@ -975,8 +1259,60 @@
             return element;
           }),
         );
+
+      mediaContainer.hidden = !media.src;
+      communicationImage.removeAttribute("src");
+      if (media.src) {
+        communicationImage.alt = media.alt || `Immagine ${item.title}`;
+        communicationImage.style.objectPosition = media.position || "center";
+        communicationImage.addEventListener(
+          "error",
+          () => {
+            mediaContainer.hidden = true;
+          },
+          { once: true },
+        );
+        communicationImage.src = media.src;
+      }
+
       communicationDialog._returnFocus = trigger;
       communicationDialog.showModal();
+    }
+
+    function openEventDetail(item, trigger) {
+      if (!item) return;
+      const attachment = item.attachment || {};
+      const attachmentContainer = eventDetailDialog.querySelector(
+        "#event-detail-attachment",
+      );
+      const downloadLink = eventDetailDialog.querySelector(
+        "#event-detail-download",
+      );
+      const downloadLabel = eventDetailDialog.querySelector(
+        "#event-detail-download-label",
+      );
+
+      eventDetailDialog.querySelector("#event-detail-title").textContent =
+        item.title;
+      eventDetailDialog.querySelector("#event-detail-description").textContent =
+        item.description;
+      eventDetailDialog.querySelector("#event-detail-date").textContent =
+        formatStoredNewsDate(item.date) || item.date;
+      eventDetailDialog.querySelector("#event-detail-place").textContent =
+        item.place || "Altavilla Milicia";
+
+      attachmentContainer.hidden = !attachment.src;
+      downloadLink.removeAttribute("href");
+      downloadLink.removeAttribute("download");
+      downloadLabel.textContent = "Scarica documento";
+      if (attachment.src) {
+        downloadLink.href = attachment.src;
+        downloadLink.download = attachment.name || "documento";
+        downloadLabel.textContent = `Scarica ${attachment.name || "documento"}`;
+      }
+
+      eventDetailDialog._returnFocus = trigger;
+      eventDetailDialog.showModal();
     }
 
     function openEnvironmentDetail(detailId, trigger) {
@@ -1067,6 +1403,10 @@
       document.querySelector("#doctor-list"),
       ".doctor-card",
     );
+    enableHorizontalKeyboardScroll(
+      document.querySelector("#association-list"),
+      ".association-card",
+    );
 
     document.querySelectorAll("[data-open-search]").forEach((button) => {
       button.addEventListener("click", () => openSearch());
@@ -1096,10 +1436,27 @@
       .addEventListener("click", (event) => {
         if (event.target.closest("[data-search-result]")) closeSearch();
       });
+    archiveDialog
+      .querySelector("#archive-search")
+      .addEventListener("submit", (event) => {
+        event.preventDefault();
+        archiveDialog._renderArchive?.(
+          archiveDialog.querySelector("#archive-search-input").value,
+        );
+      });
+    archiveDialog
+      .querySelector("#archive-search-input")
+      .addEventListener("input", (event) => {
+        archiveDialog._renderArchive?.(event.target.value);
+      });
 
     document.addEventListener("click", (event) => {
       const scrollLink = event.target.closest("[data-scroll-to]");
       const archiveNewsButton = event.target.closest("[data-archive-news-index]");
+      const archiveEventButton = event.target.closest(
+        "[data-archive-event-index]",
+      );
+      const associationButton = event.target.closest("[data-association-index]");
       if (scrollLink) {
         const targetId = scrollLink.dataset.scrollTo;
         if (document.getElementById(targetId)) {
@@ -1127,12 +1484,44 @@
           archiveNewsButton,
         );
       }
+      if (archiveEventButton) {
+        const futureEvents = asArray(data.appointments.archive?.future).slice(3);
+        const pastEvents = asArray(data.appointments.archive?.past);
+        const eventGroup =
+          archiveEventButton.dataset.archiveEventGroup === "future"
+            ? futureEvents
+            : pastEvents;
+        closeArchive();
+        openEventDetail(
+          eventGroup[
+            Number.parseInt(archiveEventButton.dataset.archiveEventIndex, 10)
+          ],
+          archiveEventButton,
+        );
+      }
+      if (associationButton) {
+        openAssociation(
+          Number.parseInt(associationButton.dataset.associationIndex, 10),
+          associationButton,
+        );
+      }
     });
 
     document.querySelector("#news-list").addEventListener("click", (event) => {
       const button = event.target.closest("[data-news-index]");
       if (button) {
         openCommunication(Number.parseInt(button.dataset.newsIndex, 10), button);
+      }
+    });
+    document.querySelector("#event-list").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-event-index]");
+      if (button) {
+        openEventDetail(
+          asArray(data.appointments.archive?.future)[
+            Number.parseInt(button.dataset.eventIndex, 10)
+          ],
+          button,
+        );
       }
     });
     document
@@ -1155,8 +1544,18 @@
         button.addEventListener("click", () => communicationDialog.close()),
       );
     document
+      .querySelectorAll("[data-close-event-detail]")
+      .forEach((button) =>
+        button.addEventListener("click", () => eventDetailDialog.close()),
+      );
+    document
       .querySelectorAll("[data-close-archive]")
       .forEach((button) => button.addEventListener("click", closeArchive));
+    document
+      .querySelectorAll("[data-close-association]")
+      .forEach((button) =>
+        button.addEventListener("click", () => associationDialog.close()),
+      );
     environmentDialog.addEventListener("close", () => {
       environmentDialog._returnFocus?.focus();
       environmentDialog._returnFocus = null;
@@ -1165,11 +1564,26 @@
       communicationDialog._returnFocus?.focus();
       communicationDialog._returnFocus = null;
     });
+    eventDetailDialog.addEventListener("close", () => {
+      eventDetailDialog._returnFocus?.focus();
+      eventDetailDialog._returnFocus = null;
+    });
     archiveDialog.addEventListener("close", () => {
       archiveDialog._returnFocus?.focus();
       archiveDialog._returnFocus = null;
     });
-    [searchDialog, environmentDialog, communicationDialog, archiveDialog].forEach((dialog) => {
+    associationDialog.addEventListener("close", () => {
+      associationDialog._returnFocus?.focus();
+      associationDialog._returnFocus = null;
+    });
+    [
+      searchDialog,
+      environmentDialog,
+      communicationDialog,
+      eventDetailDialog,
+      archiveDialog,
+      associationDialog,
+    ].forEach((dialog) => {
       dialog.addEventListener("click", (event) => {
         if (event.target === dialog) dialog.close();
       });

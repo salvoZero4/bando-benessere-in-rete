@@ -8,14 +8,25 @@
   const eventForm = document.querySelector("#event-form");
   const preview = document.querySelector("#image-preview");
   const previewImage = preview?.querySelector("img");
+  const eventAttachmentPreview = document.querySelector(
+    "#event-attachment-preview",
+  );
+  const eventAttachmentPreviewName =
+    eventAttachmentPreview?.querySelector("strong");
   const newsDialogTitle = document.querySelector("#news-dialog-title");
   const newsSubmitButton = document.querySelector("[data-news-submit]");
 
   let imageData = "";
   let imageName = "";
+  let imageRemoved = false;
+  let eventAttachmentData = "";
+  let eventAttachmentName = "";
+  let eventAttachmentType = "";
   let editingNewsId = "";
   let newsItems = [];
   let eventItems = [];
+  let newsSearchTerm = "";
+  let eventSearchTerm = "";
 
   function escapeHtml(value = "") {
     return String(value)
@@ -28,6 +39,20 @@
 
   function asArray(value) {
     return Array.isArray(value) ? value : [];
+  }
+
+  function normalizedSearchText(value = "") {
+    return String(value)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase("it");
+  }
+
+  function matchesSearch(item, term, fields) {
+    if (!term) return true;
+    return normalizedSearchText(
+      fields.map((field) => item[field] || "").join(" "),
+    ).includes(normalizedSearchText(term));
   }
 
   function readStoredArray(key, fallback) {
@@ -93,9 +118,6 @@
   }
 
   function imageBlock(item) {
-    if (item.image) {
-      return `<img src="${escapeHtml(item.image)}" alt="Immagine della news ${escapeHtml(item.title)}" loading="lazy" />`;
-    }
     return `
       <div class="management-news-card__placeholder" aria-hidden="true">
         <svg viewBox="0 0 48 48">
@@ -104,22 +126,41 @@
           <path d="m8 36 10-10 7 7 5-5 10 8" />
         </svg>
         <span>${escapeHtml(item.imageName || "Immagine non caricata")}</span>
-      </div>`;
+      </div>
+      ${
+        item.image
+          ? `<img src="${escapeHtml(item.image)}" alt="Immagine della news ${escapeHtml(item.title)}" loading="lazy" data-management-image />`
+          : ""
+      }`;
+  }
+
+  function bindManagementImages(container = document) {
+    container.querySelectorAll("[data-management-image]").forEach((image) => {
+      const hideBrokenImage = () => {
+        image.hidden = true;
+      };
+      image.addEventListener("error", hideBrokenImage, { once: true });
+      if (image.complete && image.naturalWidth === 0) {
+        hideBrokenImage();
+      }
+    });
   }
 
   function newsTemplate(item) {
     return `
-      <article class="management-news-card" data-news-id="${escapeHtml(item.id)}">
-        <div class="management-news-card__media">
-          ${imageBlock(item)}
-        </div>
+      <article class="management-news-card${item.image ? "" : " management-news-card--no-image"}" data-news-id="${escapeHtml(item.id)}">
+        ${
+          item.image
+            ? `<div class="management-news-card__media">${imageBlock(item)}</div>`
+            : ""
+        }
         <div class="management-news-card__body">
           <div class="management-news-card__meta">
             <span>${escapeHtml(item.status || "Pubblicata")}</span>
             <time datetime="${escapeHtml(item.date)}">${escapeHtml(formatDate(item.date))}</time>
           </div>
           <h3>${escapeHtml(item.title)}</h3>
-          <p>${escapeHtml(item.text)}</p>
+          <p class="management-news-card__description">${escapeHtml(item.text)}</p>
           <div class="management-card-actions" aria-label="Azioni per ${escapeHtml(item.title)}">
             <button class="button button--ghost button--compact" type="button" data-edit-news="${escapeHtml(item.id)}">Modifica</button>
             <button class="button button--danger button--compact" type="button" data-delete-news="${escapeHtml(item.id)}">Cancella</button>
@@ -141,6 +182,11 @@
           <h3>${escapeHtml(item.title)}</h3>
           <p>${escapeHtml(item.description)}</p>
           <small>${escapeHtml(item.place)}</small>
+          ${
+            item.attachmentName
+              ? `<span class="management-attachment-badge">Allegato: ${escapeHtml(item.attachmentName)}</span>`
+              : ""
+          }
           <div class="management-card-actions">
             <button class="button button--danger button--compact" type="button" data-delete-event="${escapeHtml(item.id)}">Cancella evento</button>
           </div>
@@ -149,25 +195,25 @@
   }
 
   function getStats(data) {
-    const configuredStats = asArray(data.stats);
-    const dynamicStats = configuredStats.length
-      ? configuredStats
-      : [
-          { label: "Comunicazioni", value: "0" },
-          { label: "Eventi simulati", value: "0" },
-          { label: "Stato area", value: "Simulazione" },
-        ];
+    const configuredUpdate = asArray(data.stats).find((stat) =>
+      String(stat.label || "")
+        .toLocaleLowerCase("it")
+        .includes("aggiornamento"),
+    );
+    const latestDate = [...newsItems, ...eventItems]
+      .map((item) => item.date)
+      .filter(Boolean)
+      .sort()
+      .at(-1);
 
-    return dynamicStats.map((stat, index) => {
-      const label = stat.label || "";
-      if (index === 0 || label.toLowerCase().includes("comunicazioni")) {
-        return { ...stat, value: String(newsItems.length) };
-      }
-      if (label.toLowerCase().includes("event")) {
-        return { ...stat, value: String(eventItems.length) };
-      }
-      return stat;
-    });
+    return [
+      {
+        label: configuredUpdate?.label || "Ultimo aggiornamento",
+        value: latestDate
+          ? formatDate(latestDate)
+          : configuredUpdate?.value || "Nessun contenuto",
+      },
+    ];
   }
 
   function statsTemplate(data) {
@@ -198,46 +244,59 @@
       </section>
 
       <section class="management-dashboard">
-        <div class="shell">
+        <div class="shell management-dashboard__shell">
           <div class="management-stats">
             ${statsTemplate(data)}
           </div>
 
-          <div class="management-toolbar">
-            <div>
-              <p class="eyebrow">Archivio news</p>
-              <h2>Elenco notizie</h2>
-            </div>
-            <button class="button button--primary" type="button" data-open-news-dialog>
-              ${escapeHtml(data.addButton)}
-            </button>
-          </div>
-          <div class="management-list" id="management-news-list">
-            ${
-              newsItems.length
-                ? newsItems.map(newsTemplate).join("")
-                : `<p class="empty-state">${escapeHtml(data.emptyMessage)}</p>`
-            }
-          </div>
+          <div class="management-content-grid">
+            <section class="management-content-panel" aria-labelledby="management-events-title">
+              <div class="management-toolbar">
+                <div>
+                  <p class="eyebrow">${escapeHtml(events.eyebrow || "Agenda")}</p>
+                  <h2 id="management-events-title">${escapeHtml(events.title || "Eventi")}</h2>
+                </div>
+                <button class="button button--primary" type="button" data-open-event-dialog>
+                  ${escapeHtml(events.addButton || "Aggiungi evento")}
+                </button>
+              </div>
+              <label class="management-search" for="management-event-search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+                <span class="sr-only">Cerca tra gli eventi</span>
+                <input id="management-event-search" type="search" placeholder="Cerca evento, luogo o data" autocomplete="off" />
+              </label>
+              <p class="management-search__status" id="management-event-search-status" role="status" aria-live="polite"></p>
+              <div class="management-scroll-area">
+                <div class="management-event-list" id="management-event-list"></div>
+              </div>
+            </section>
 
-          <div class="management-toolbar management-toolbar--spaced">
-            <div>
-              <p class="eyebrow">${escapeHtml(events.eyebrow || "Agenda")}</p>
-              <h2>${escapeHtml(events.title || "Eventi")}</h2>
-            </div>
-            <button class="button button--primary" type="button" data-open-event-dialog>
-              ${escapeHtml(events.addButton || "Aggiungi evento")}
-            </button>
-          </div>
-          <div class="management-event-list" id="management-event-list">
-            ${
-              eventItems.length
-                ? eventItems.map(eventTemplate).join("")
-                : `<p class="empty-state">${escapeHtml(events.emptyMessage || "Non sono presenti eventi inseriti dal personale.")}</p>`
-            }
+            <section class="management-content-panel" aria-labelledby="management-news-title">
+              <div class="management-toolbar">
+                <div>
+                  <p class="eyebrow">Archivio news</p>
+                  <h2 id="management-news-title">Comunicazioni</h2>
+                </div>
+                <button class="button button--primary" type="button" data-open-news-dialog>
+                  ${escapeHtml(data.addButton)}
+                </button>
+              </div>
+              <label class="management-search" for="management-news-search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+                <span class="sr-only">Cerca tra le comunicazioni</span>
+                <input id="management-news-search" type="search" placeholder="Cerca comunicazione o data" autocomplete="off" />
+              </label>
+              <p class="management-search__status" id="management-news-search-status" role="status" aria-live="polite"></p>
+              <div class="management-scroll-area">
+                <div class="management-list" id="management-news-list"></div>
+              </div>
+            </section>
           </div>
         </div>
       </section>`;
+
+    refreshEventList();
+    refreshNewsList();
   }
 
   function refreshStats() {
@@ -249,26 +308,52 @@
 
   function refreshNewsList() {
     const list = document.querySelector("#management-news-list");
+    const status = document.querySelector("#management-news-search-status");
     if (!list) return;
-    list.innerHTML = newsItems.length
-      ? newsItems.map(newsTemplate).join("")
-      : `<p class="empty-state">${escapeHtml(window.siteContent.management.emptyMessage)}</p>`;
+    const filteredItems = newsItems.filter((item) =>
+      matchesSearch(item, newsSearchTerm, ["title", "text", "date", "status"]),
+    );
+    list.innerHTML = filteredItems.length
+      ? filteredItems.map(newsTemplate).join("")
+      : `<p class="empty-state">${escapeHtml(newsSearchTerm ? "Nessuna comunicazione corrisponde alla ricerca." : window.siteContent.management.emptyMessage)}</p>`;
+    bindManagementImages(list);
+    if (status) {
+      status.textContent = newsSearchTerm
+        ? `${filteredItems.length} ${filteredItems.length === 1 ? "comunicazione trovata" : "comunicazioni trovate"}`
+        : `${newsItems.length} ${newsItems.length === 1 ? "comunicazione" : "comunicazioni"}`;
+    }
     refreshStats();
   }
 
   function refreshEventList() {
     const list = document.querySelector("#management-event-list");
+    const status = document.querySelector("#management-event-search-status");
     const config = window.siteContent.management.events || {};
     if (!list) return;
-    list.innerHTML = eventItems.length
-      ? eventItems.map(eventTemplate).join("")
-      : `<p class="empty-state">${escapeHtml(config.emptyMessage || "Non sono presenti eventi inseriti dal personale.")}</p>`;
+    const filteredItems = eventItems.filter((item) =>
+      matchesSearch(item, eventSearchTerm, [
+        "title",
+        "description",
+        "date",
+        "place",
+        "attachmentName",
+      ]),
+    );
+    list.innerHTML = filteredItems.length
+      ? filteredItems.map(eventTemplate).join("")
+      : `<p class="empty-state">${escapeHtml(eventSearchTerm ? "Nessun evento corrisponde alla ricerca." : config.emptyMessage || "Non sono presenti eventi inseriti dal personale.")}</p>`;
+    if (status) {
+      status.textContent = eventSearchTerm
+        ? `${filteredItems.length} ${filteredItems.length === 1 ? "evento trovato" : "eventi trovati"}`
+        : `${eventItems.length} ${eventItems.length === 1 ? "evento" : "eventi"}`;
+    }
     refreshStats();
   }
 
   function resetNewsForm(item) {
     imageData = item?.image || "";
     imageName = item?.imageName || "";
+    imageRemoved = Boolean(item?.imageRemoved);
     editingNewsId = item?.id || "";
     newsForm.reset();
     newsForm.elements.title.value = item?.title || "";
@@ -285,8 +370,22 @@
   }
 
   function resetEventForm() {
+    eventAttachmentData = "";
+    eventAttachmentName = "";
+    eventAttachmentType = "";
     eventForm.reset();
     eventForm.elements.date.value = todayValue();
+    eventAttachmentPreview.hidden = true;
+    eventAttachmentPreviewName.textContent = "";
+  }
+
+  function removeNewsImage() {
+    imageData = "";
+    imageName = "";
+    imageRemoved = true;
+    newsForm.elements.image.value = "";
+    previewImage.removeAttribute("src");
+    preview.hidden = true;
   }
 
   function openNewsDialog(item) {
@@ -372,6 +471,19 @@
   }
 
   function bindInteractions() {
+    document
+      .querySelector("#management-event-search")
+      .addEventListener("input", (event) => {
+        eventSearchTerm = event.target.value.trim();
+        refreshEventList();
+      });
+    document
+      .querySelector("#management-news-search")
+      .addEventListener("input", (event) => {
+        newsSearchTerm = event.target.value.trim();
+        refreshNewsList();
+      });
+
     document.addEventListener("click", (event) => {
       const editButton = event.target.closest("[data-edit-news]");
       const deleteButton = event.target.closest("[data-delete-news]");
@@ -379,6 +491,7 @@
 
       if (event.target.closest("[data-open-news-dialog]")) openNewsDialog();
       if (event.target.closest("[data-close-news-dialog]")) closeNewsDialog();
+      if (event.target.closest("[data-remove-news-image]")) removeNewsImage();
       if (event.target.closest("[data-open-event-dialog]")) openEventDialog();
       if (event.target.closest("[data-close-event-dialog]")) closeEventDialog();
       if (editButton) editNews(editButton.dataset.editNews);
@@ -398,18 +511,53 @@
       const file = event.target.files?.[0];
       if (!file) {
         if (!editingNewsId) {
-          imageData = "";
-          imageName = "";
-          preview.hidden = true;
+          removeNewsImage();
         }
         return;
       }
       imageName = file.name;
+      imageRemoved = false;
       const reader = new FileReader();
       reader.addEventListener("load", () => {
         imageData = String(reader.result || "");
         previewImage.src = imageData;
         preview.hidden = false;
+      });
+      reader.readAsDataURL(file);
+    });
+
+    eventForm.elements.attachment.addEventListener("change", (event) => {
+      const file = event.target.files?.[0];
+      if (!file) {
+        eventAttachmentData = "";
+        eventAttachmentName = "";
+        eventAttachmentType = "";
+        eventAttachmentPreview.hidden = true;
+        eventAttachmentPreviewName.textContent = "";
+        return;
+      }
+
+      const maximumAttachmentSize = 3 * 1024 * 1024;
+      if (file.size > maximumAttachmentSize) {
+        event.target.value = "";
+        eventAttachmentData = "";
+        eventAttachmentName = "";
+        eventAttachmentType = "";
+        eventAttachmentPreview.hidden = true;
+        eventAttachmentPreviewName.textContent = "";
+        window.alert(
+          "Il documento supera il limite di 3 MB previsto da questa simulazione.",
+        );
+        return;
+      }
+
+      eventAttachmentName = file.name;
+      eventAttachmentType = file.type || "application/octet-stream";
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        eventAttachmentData = String(reader.result || "");
+        eventAttachmentPreviewName.textContent = eventAttachmentName;
+        eventAttachmentPreview.hidden = false;
       });
       reader.readAsDataURL(file);
     });
@@ -425,6 +573,7 @@
         date: newsForm.elements.date.value,
         image: imageData,
         imageName,
+        imageRemoved,
         status: "Pubblicata",
       };
 
@@ -446,6 +595,9 @@
         title: eventForm.elements.title.value.trim(),
         description: eventForm.elements.description.value.trim(),
         place: eventForm.elements.place.value.trim(),
+        attachmentData: eventAttachmentData,
+        attachmentName: eventAttachmentName,
+        attachmentType: eventAttachmentType,
       };
 
       eventItems = [item, ...eventItems];

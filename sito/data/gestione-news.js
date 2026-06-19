@@ -36,7 +36,7 @@ window.siteContent.management = {
       "date": "2026-06-10",
       "status": "Pubblicata",
       "imageName": "news-benessere-comune.jpg",
-      "image": ""
+      "image": "assets/foto/news-benessere-comune.jpg"
     },
     {
       "id": "news-002",
@@ -45,7 +45,7 @@ window.siteContent.management = {
       "date": "2026-06-12",
       "status": "Pubblicata",
       "imageName": "impianti-sportivi.jpg",
-      "image": ""
+      "image": "assets/foto/news-strutture-sportive.jpg"
     },
     {
       "id": "news-003",
@@ -54,7 +54,7 @@ window.siteContent.management = {
       "date": "2026-06-14",
       "status": "Pubblicata",
       "imageName": "territorio-cultura.jpg",
-      "image": ""
+      "image": "assets/foto/news-territorio-cultura.jpg"
     }
   ]
 };

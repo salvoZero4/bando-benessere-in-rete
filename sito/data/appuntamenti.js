@@ -3,7 +3,7 @@ window.siteContent.appointments = {
   "eyebrow": "Vivi Altavilla",
   "title": "Calendario ed eventi",
   "externalLink": {
-    "label": "Eventi passati",
+    "label": "Tutti gli eventi",
     "href": ""
   },
   "emptyMessage": "Nessun appuntamento disponibile.",

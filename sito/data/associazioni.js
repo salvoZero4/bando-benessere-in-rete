@@ -8,78 +8,26 @@ window.siteContent.associations = {
   "emptyMessage": "Nessuna associazione disponibile.",
   "items": [
     {
-      "name": "Altavilla Milicia USD",
-      "affiliation": "Federazione Italiana Giuoco Calcio (FIGC)",
-      "affiliationCode": "964195",
+      "name": "Yoga Zone Sicily APS",
+      "affiliation": "Associazione Promozione Sociale (APS)",
       "disciplines": [
-        "Futsal (calcio a 5)"
+        "Yoga",
+        "Benessere olistico"
       ],
-      "description": "Associazione sportiva dedicata al calcio a 5, con attività agonistica e partecipazione alle competizioni federali.",
+      "description": "L'ente promuove il benessere psicofisico sul territorio attraverso la pratica dello yoga, della meditazione e della consapevolezza.",
       "image": {
-        "src": "assets/foto/associazioni/altavilla-milicia-usd.jpg",
-        "alt": "Attività sportiva dell'Altavilla Milicia USD",
+        "src": "assets/foto/associazioni/yoga-zone-sicily.jpg",
+        "alt": "Yoga Zone Sicily APS",
         "position": "center"
       },
-      "phone": "3474432460",
-      "email": ""
-    },
-    {
-      "name": "ASD Città di Altavilla",
-      "affiliation": "Federazione Italiana Sport Biliardo e Bowling (FISBB)",
-      "affiliationCode": "F51B55",
-      "disciplines": [
-        "Biliardo sportivo - Stecca"
-      ],
-      "description": "Associazione affiliata alla federazione del biliardo sportivo, attiva nella disciplina della stecca e nelle competizioni federali.",
-      "image": {
-        "src": "assets/foto/associazioni/citta-di-altavilla-biliardo.jpg",
-        "alt": "Attività di biliardo sportivo dell'ASD Città di Altavilla",
-        "position": "center"
-      },
-      "phone": "",
-      "email": ""
-    },
-    {
-      "name": "ASD Giomax",
-      "affiliation": "Unione Italiana Sport per Tutti (UISP)",
-      "affiliationCode": "V060847",
-      "disciplines": [
-        "Danza classica",
-        "Tecniche di balletto",
-        "Repertorio classico"
-      ],
-      "description": "Accademia dedicata alla danza classica, alle tecniche di balletto e alla preparazione coreutica.",
-      "image": {
-        "src": "assets/foto/associazioni/asd-giomax.jpg",
-        "alt": "Lezione o esibizione di danza dell'ASD Giomax",
-        "position": "center"
-      },
-      "phone": "3475906303",
-      "email": ""
-    },
-    {
-      "name": "ASD Professional School Dance Academy",
-      "affiliation": "Centro Sportivo Educativo Nazionale (CSEN)",
-      "affiliationCode": "64649",
-      "disciplines": [
-        "Danza classica e contemporanea",
-        "Danze latine e standard",
-        "Urban dance e hip hop",
-        "Ginnastica acrobatica e fitness"
-      ],
-      "description": "Scuola multidisciplinare dedicata alla danza, dalla formazione classica e contemporanea alle danze latine, coreografiche e urban.",
-      "image": {
-        "src": "assets/foto/associazioni/professional-school-dance-academy.jpg",
-        "alt": "Esibizione della Professional School Dance Academy",
-        "position": "center"
-      },
-      "phone": "",
-      "email": ""
+      "phone": "3294555277",
+      "email": "",
+      "web": "https://www.instagram.com/yogazonesicily",
+      "logo": "assets/foto/associazioni/yoga-zone-sicily-logo.jpg"
     },
     {
       "name": "ASD Tennis' Friends",
       "affiliation": "Federazione Italiana Tennis e Padel (FITP)",
-      "affiliationCode": "19230103",
       "disciplines": [
         "Tennis"
       ],
@@ -90,12 +38,13 @@ window.siteContent.associations = {
         "position": "center"
       },
       "phone": "3385496159",
-      "email": "guagliardo.paolo@libero.it"
+      "email": "guagliardo.paolo@libero.it",
+      "web": "https://www.facebook.com/ASDTennisFriends",
+      "logo": "assets/foto/associazioni/tennis-friends-logo.jpg"
     },
     {
       "name": "Blasius Club SSD a RL",
       "affiliation": "Unione Italiana Sport per Tutti (UISP)",
-      "affiliationCode": "V060850",
       "disciplines": [
         "Fitness e ginnastica per la salute",
         "Gym boxe",
@@ -109,27 +58,72 @@ window.siteContent.associations = {
         "position": "center"
       },
       "phone": "0918432262",
-      "email": "info@palestrablasius.it"
+      "email": "info@palestrablasius.it",
+      "logo": "assets/foto/associazioni/blasius-club-logo.jpg",
+      "logoFit": "cover"
     },
     {
-      "name": "MC ASD Motostaffette Sicilia",
-      "affiliation": "Federazione Ciclistica Italiana (FCI) e CSAIn",
-      "affiliationCode": "17F2169 / 240846",
+      "name": "Fight & Fitness Academy ASD",
+      "affiliation": "IKMI, IKA, CSAIN e IBFF",
       "disciplines": [
-        "Ciclismo su strada e su pista",
-        "Mountain bike e ciclocross",
-        "Cicloturismo",
-        "Mototurismo e scorta tecnica"
+        "Krav Maga",
+        "Difesa Personale Femminile",
+        "Prevenzione Bullismo",
+        "Collaborazioni Istituzionali"
       ],
-      "description": "Associazione impegnata nel ciclismo, nel mototurismo, nella formazione e nei servizi tecnici di supporto alle manifestazioni sportive.",
+      "description": "La Self Defence Academy ad Altavilla Milicia fa capo al maestro Mauro Labita, esperto e istruttore certificato di Krav Maga, Kick Boxing e difesa personale. Il centro di riferimento principale per le sue attività sul territorio è la Fight & Fitness Academy ASD.",
       "image": {
-        "src": "assets/foto/associazioni/motostaffette-sicilia.jpg",
-        "alt": "Attività di ciclismo e motostaffetta dell'ASD Motostaffette Sicilia",
+        "src": "assets/foto/associazioni/self-defence-academy.jpg",
+        "alt": "Self defence Academy",
         "position": "center"
       },
-      "phone": "3357794264",
-      "email": "motostaffettesicilia15@gmail.com"
+      "phone": "3387559232",
+      "email": "maurolabita@gmail.com",
+      "web": "https://www.selfdefenceacademy.it",
+      "logo": "assets/foto/associazioni/self-defence-academy-logo.jpg"
+    },
+    {
+      "name": "ASD Pedoni Uniti",
+      "affiliation": "Federazione Italiana Pallavolo (FIPAV)",
+      "disciplines": [
+        "Scuola di Scacchi",
+        "Giocomotricità",
+        "Progetti scolastici",
+        "Tornei e Competizioni"
+      ],
+      "description": "L'ASD Pedoni Uniti è un'associazione sportiva dilettantistica attiva nel comune di Altavilla Milicia e nei territori limitrofi, specializzata nella diffusione del gioco degli scacchi e del badminton.",
+      "image": {
+        "src": "assets/foto/associazioni/pedoni-uniti.jpg",
+        "alt": "ASD Pedoni Uniti",
+        "position": "center"
+      },
+      "phone": "3899013317",
+      "email": "pedoniuniti@gmail.com",
+      "web": "https://www.pedoniuniti.it",
+      "logo": "assets/foto/associazioni/pedoni-uniti-logo.jpg"
+    },
+    {
+      "name": "ASD Palma Team Volley",
+      "affiliation": "Federazione Scacchistica Italiana (FSI)",
+      "disciplines": [
+        "Volley e Minivolley",
+        "Settore Giovanile",
+        "Attività Agonistica Senior",
+        "Amatoriale"
+      ],
+      "description": "L'ASD Palma Team Volley è una Scuola Federale di Pallavolo con sede ad Altavilla Milicia, specializzata in corsi di avviamento alla pallavolo e attività agonistica per diverse fasce d'età.",
+      "image": {
+        "src": "assets/foto/associazioni/palma-team-volley.jpg",
+        "alt": "ASD Palma Team Volley",
+        "position": "center"
+      },
+      "phone": "3201779053",
+      "email": "asdpalmateamvolley@gmail.com",
+      "web": "https://www.facebook.com/palmateamvolley",
+      "logo": "assets/foto/associazioni/palma-team-volley-logo.jpg"
     }
+
+
   ],
   "search": "associazioni sportive calcio futsal biliardo danza tennis fitness ciclismo motostaffette"
 };

@@ -9,7 +9,7 @@
     />
     <meta name="theme-color" content="#0b6656" />
     <title>Altavilla Milicia Benessere</title>
-    <link rel="stylesheet" href="css/styles.css?v=20260616-4" />
+    <link rel="stylesheet" href="css/styles.css?v=20260619-13" />
     <script src="data/hero.js" defer></script>
     <script src="data/aree.js" defer></script>
     <script src="data/appuntamenti.js" defer></script>
@@ -22,7 +22,7 @@
     <script src="data/chiusura.js" defer></script>
     <script src="data/contatti.js" defer></script>
     <script src="data/partner.js" defer></script>
-    <script src="js/app.js?v=20260616-4" defer></script>
+    <script src="js/app.js?v=20260619-13" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#contenuto">Vai al contenuto principale</a>
@@ -295,6 +295,9 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
           </button>
         </header>
+        <div class="communication-dialog__media" id="communication-media" hidden>
+          <img id="communication-image" alt="" />
+        </div>
         <p class="communication-dialog__subtitle" id="communication-subtitle"></p>
         <dl class="communication-dialog__meta">
           <div><dt>Tipologia</dt><dd id="communication-type"></dd></div>
@@ -303,6 +306,42 @@
         <div class="communication-dialog__content" id="communication-content"></div>
         <footer class="communication-dialog__footer">
           <button class="button button--primary" type="button" data-close-communication="back">
+            <span aria-hidden="true">←</span> Torna indietro
+          </button>
+        </footer>
+      </article>
+    </dialog>
+
+    <dialog
+      class="event-detail-dialog"
+      id="event-detail-dialog"
+      aria-labelledby="event-detail-title"
+      aria-describedby="event-detail-description"
+    >
+      <article class="event-detail-dialog__article">
+        <header class="event-detail-dialog__header">
+          <div>
+            <p class="eyebrow">Calendario ed eventi</p>
+            <h2 id="event-detail-title"></h2>
+          </div>
+          <button class="icon-button" type="button" data-close-event-detail aria-label="Chiudi la scheda evento">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <p class="event-detail-dialog__description" id="event-detail-description"></p>
+        <dl class="event-detail-dialog__meta">
+          <div><dt>Data</dt><dd id="event-detail-date"></dd></div>
+          <div><dt>Luogo</dt><dd id="event-detail-place"></dd></div>
+        </dl>
+        <div class="event-detail-dialog__attachment" id="event-detail-attachment" hidden>
+          <span>Documento allegato</span>
+          <a class="button button--primary" id="event-detail-download" href="" download>
+            <span id="event-detail-download-label">Scarica documento</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+        <footer class="event-detail-dialog__footer">
+          <button class="button button--primary" type="button" data-close-event-detail>
             <span aria-hidden="true">←</span> Torna indietro
           </button>
         </footer>
@@ -326,12 +365,57 @@
           </button>
         </header>
         <p class="archive-dialog__subtitle" id="archive-dialog-subtitle"></p>
-        <div class="archive-list" id="archive-dialog-list"></div>
+        <form class="archive-search" id="archive-search" role="search">
+          <label class="sr-only" for="archive-search-input">Cerca nell'archivio</label>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" />
+            <path d="m16 16 4 4" />
+          </svg>
+          <input id="archive-search-input" type="search" autocomplete="off" />
+          <button type="submit">Cerca</button>
+        </form>
+        <p class="archive-search__status" id="archive-search-status" role="status" aria-live="polite"></p>
+        <div class="archive-list" id="archive-dialog-list" aria-live="polite"></div>
         <footer class="archive-dialog__footer">
           <button class="button button--primary" type="button" data-close-archive>
             <span aria-hidden="true">←</span> Torna indietro
           </button>
         </footer>
+      </article>
+    </dialog>
+
+    <dialog
+      class="association-dialog"
+      id="association-dialog"
+      aria-labelledby="association-dialog-title"
+    >
+      <article class="association-dialog__article">
+        <header class="association-dialog__header">
+          <div>
+            <p class="eyebrow">Associazione sportiva</p>
+            <h2 id="association-dialog-title"></h2>
+          </div>
+          <button class="icon-button" type="button" data-close-association aria-label="Chiudi la scheda associazione">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <div class="association-dialog__photo">
+          <span aria-hidden="true"></span>
+          <img id="association-dialog-photo" alt="" hidden />
+        </div>
+        <section class="association-dialog__section">
+          <span>Affiliazione</span>
+          <p id="association-dialog-affiliation"></p>
+        </section>
+        <section class="association-dialog__section">
+          <span>Discipline praticate</span>
+          <ul class="association-dialog__disciplines" id="association-dialog-disciplines"></ul>
+        </section>
+        <section class="association-dialog__section">
+          <span>Descrizione</span>
+          <p id="association-dialog-description"></p>
+        </section>
+        <footer class="association-dialog__contacts" id="association-dialog-contacts"></footer>
       </article>
     </dialog>
 

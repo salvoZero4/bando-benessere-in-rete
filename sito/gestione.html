@@ -9,9 +9,9 @@
     />
     <meta name="theme-color" content="#0b6656" />
     <title>Area gestione | Altavilla Milicia Benessere</title>
-    <link rel="stylesheet" href="css/styles.css?v=20260616-3" />
+    <link rel="stylesheet" href="css/styles.css?v=20260619-13" />
     <script src="data/gestione-news.js" defer></script>
-    <script src="js/management.js?v=20260616-3" defer></script>
+    <script src="js/management.js?v=20260619-13" defer></script>
   </head>
   <body class="management-page">
     <a class="skip-link" href="#management-content">Vai all'area gestione</a>
@@ -122,10 +122,14 @@
         </div>
 
         <div class="management-preview" id="image-preview" hidden>
-          <span>Anteprima immagine</span>
+          <div class="management-preview__header">
+            <span>Anteprima immagine</span>
+            <button class="button button--danger button--compact" type="button" data-remove-news-image>
+              Rimuovi immagine
+            </button>
+          </div>
           <img alt="" />
         </div>
-
         <footer class="management-dialog__footer">
           <button class="button button--ghost" type="button" data-close-news-dialog>Annulla</button>
           <button class="button button--primary" type="submit" data-news-submit>Pubblica</button>
@@ -162,6 +166,20 @@
             <span>Descrizione</span>
             <textarea name="description" rows="5" maxlength="550" placeholder="Descrivi l'appuntamento..." required></textarea>
           </label>
+          <label class="management-file-field management-field--wide">
+            <span>Documento allegato</span>
+            <input
+              name="attachment"
+              type="file"
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.ods,.odp,.txt,.rtf,.zip"
+            />
+            <small>PDF, documenti Office, OpenDocument, testo o ZIP. L'allegato sarà scaricabile dalla scheda dell'evento.</small>
+          </label>
+        </div>
+
+        <div class="management-attachment-preview" id="event-attachment-preview" hidden>
+          <span>Documento selezionato</span>
+          <strong></strong>
         </div>
 
         <footer class="management-dialog__footer">
