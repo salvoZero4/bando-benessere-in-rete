@@ -157,6 +157,7 @@
         <div class="management-news-card__body">
           <div class="management-news-card__meta">
             <span>${escapeHtml(item.status || "Pubblicata")}</span>
+            <span>${escapeHtml(item.type || "Comunicazione")}</span>
             <time datetime="${escapeHtml(item.date)}">${escapeHtml(formatDate(item.date))}</time>
           </div>
           <h3>${escapeHtml(item.title)}</h3>
@@ -311,7 +312,13 @@
     const status = document.querySelector("#management-news-search-status");
     if (!list) return;
     const filteredItems = newsItems.filter((item) =>
-      matchesSearch(item, newsSearchTerm, ["title", "text", "date", "status"]),
+      matchesSearch(item, newsSearchTerm, [
+        "title",
+        "text",
+        "type",
+        "date",
+        "status",
+      ]),
     );
     list.innerHTML = filteredItems.length
       ? filteredItems.map(newsTemplate).join("")
@@ -358,6 +365,7 @@
     newsForm.reset();
     newsForm.elements.title.value = item?.title || "";
     newsForm.elements.date.value = item?.date || todayValue();
+    newsForm.elements.type.value = item?.type || "Comunicazione";
     newsForm.elements.text.value = item?.text || "";
     newsDialogTitle.textContent = item ? "Modifica news" : "Aggiungi news";
     newsSubmitButton.textContent = item ? "Salva modifiche" : "Pubblica";
@@ -570,6 +578,7 @@
         id: editingNewsId || `news-${Date.now()}`,
         title: newsForm.elements.title.value.trim(),
         text: newsForm.elements.text.value.trim(),
+        type: newsForm.elements.type.value.trim(),
         date: newsForm.elements.date.value,
         image: imageData,
         imageName,

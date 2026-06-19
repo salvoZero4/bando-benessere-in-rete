@@ -51,9 +51,9 @@ window.siteContent.environment = {
       },
       {
         type: "Spiaggia",
-        title: "Spiaggia Marina della Brusca",
+        title: "Spiaggia Marina della Bruca",
         image: {
-          src: "assets/foto/marina-della-brusca.jpg",
+          src: "assets/foto/marina-della-bruca.jpg",
           alt: "Spiaggia Marina della Brusca ad Altavilla Milicia",
         },
         description:

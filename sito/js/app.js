@@ -245,7 +245,7 @@
         .split(/\n+/)
         .map((paragraph) => paragraph.trim())
         .filter(Boolean),
-      search: `${item.title || ""} ${text} ${date}`,
+      search: `${item.title || ""} ${text} ${item.type || ""} ${date}`,
       image: managedImage.src ? managedImage : null,
       source: "management",
     };
@@ -300,6 +300,7 @@
       const fallback = staticItemsByKey.get(normalizeNewsKey(item)) || {};
       return {
         ...item,
+        type: item.type || fallback.type || "Comunicazione",
         image: item.imageRemoved ? "" : item.image || fallback.image || "",
       };
     });
