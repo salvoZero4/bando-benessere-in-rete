@@ -59,7 +59,57 @@
     if (!key) return asArray(fallback);
     try {
       const stored = window.localStorage.getItem(key);
-      return stored ? asArray(JSON.parse(stored)) : asArray(fallback);
+      const fallbackItems = asArray(fallback);
+      const items = stored ? asArray(JSON.parse(stored)) : fallbackItems;
+      const fallbackById = new Map(
+        fallbackItems.map((item) => [item.id, item]),
+      );
+      const fallbackByTitle = new Map(
+        fallbackItems.map((item) => [
+          normalizedSearchText(item.title),
+          item,
+        ]),
+      );
+      const migratedImages = {
+        "assets/foto/news-benessere-comune.jpg": {
+          image: "assets/foto/news-benessere-comune.jpeg",
+          imageName: "news-benessere-comune.jpeg",
+        },
+        "assets/foto/news-territorio-cultura.jpg": {
+          image: "assets/foto/news-territorio-cultura.jpeg",
+          imageName: "news-territorio-cultura.jpeg",
+        },
+      };
+      return items.map((item) => {
+        const fallbackItem =
+          fallbackById.get(item.id) ||
+          fallbackByTitle.get(normalizedSearchText(item.title)) ||
+          {};
+        const currentImage = String(item.image || "").replace(
+          /news-benessere-comune\.jpg$/i,
+          "news-benessere-comune.jpeg",
+        );
+        const migratedImage = migratedImages[currentImage];
+        const fallbackImage = item.imageRemoved
+          ? {}
+          : {
+              image: currentImage || fallbackItem.image || "",
+              imageName:
+                item.imageName || fallbackItem.imageName || "",
+            };
+        if (migratedImage) {
+          return {
+            ...fallbackItem,
+            ...item,
+            ...migratedImage,
+          };
+        }
+        return {
+          ...fallbackItem,
+          ...item,
+          ...fallbackImage,
+        };
+      });
     } catch (error) {
       return asArray(fallback);
     }
@@ -117,7 +167,20 @@
     saveArray(window.siteContent.management.eventStorageKey, eventItems);
   }
 
+  function defaultNewsImage(item = {}) {
+    if (item.imageRemoved) return "";
+    const defaultItem = asArray(window.siteContent.management.items).find(
+      (candidate) =>
+        candidate.id === item.id ||
+        normalizedSearchText(candidate.title) ===
+          normalizedSearchText(item.title),
+    );
+    return defaultItem?.image || "";
+  }
+
   function imageBlock(item) {
+    const fallbackImage = defaultNewsImage(item);
+    const image = item.image || fallbackImage;
     return `
       <div class="management-news-card__placeholder" aria-hidden="true">
         <svg viewBox="0 0 48 48">
@@ -128,8 +191,8 @@
         <span>${escapeHtml(item.imageName || "Immagine non caricata")}</span>
       </div>
       ${
-        item.image
-          ? `<img src="${escapeHtml(item.image)}" alt="Immagine della news ${escapeHtml(item.title)}" loading="lazy" data-management-image />`
+        image
+          ? `<img src="${escapeHtml(image)}" alt="Immagine della news ${escapeHtml(item.title)}" loading="lazy" data-management-image data-fallback-image="${escapeHtml(fallbackImage)}" />`
           : ""
       }`;
   }
@@ -137,6 +200,11 @@
   function bindManagementImages(container = document) {
     container.querySelectorAll("[data-management-image]").forEach((image) => {
       const hideBrokenImage = () => {
+        const fallbackImage = image.dataset.fallbackImage;
+        if (fallbackImage && image.src !== new URL(fallbackImage, document.baseURI).href) {
+          image.src = fallbackImage;
+          return;
+        }
         image.hidden = true;
       };
       image.addEventListener("error", hideBrokenImage, { once: true });
@@ -147,10 +215,11 @@
   }
 
   function newsTemplate(item) {
+    const hasImage = Boolean(item.image || defaultNewsImage(item));
     return `
-      <article class="management-news-card${item.image ? "" : " management-news-card--no-image"}" data-news-id="${escapeHtml(item.id)}">
+      <article class="management-news-card${hasImage ? "" : " management-news-card--no-image"}" data-news-id="${escapeHtml(item.id)}">
         ${
-          item.image
+          hasImage
             ? `<div class="management-news-card__media">${imageBlock(item)}</div>`
             : ""
         }
@@ -358,7 +427,7 @@
   }
 
   function resetNewsForm(item) {
-    imageData = item?.image || "";
+    imageData = item?.image || defaultNewsImage(item);
     imageName = item?.imageName || "";
     imageRemoved = Boolean(item?.imageRemoved);
     editingNewsId = item?.id || "";

@@ -230,6 +230,16 @@
     return String(item.title || "").trim().toLocaleLowerCase("it");
   }
 
+  function normalizeManagedNewsImage(value = "") {
+    const migratedImages = {
+      "assets/foto/news-benessere-comune.jpg":
+        "assets/foto/news-benessere-comune.jpeg",
+      "assets/foto/news-territorio-cultura.jpg":
+        "assets/foto/news-territorio-cultura.jpeg",
+    };
+    return migratedImages[value] || value;
+  }
+
   function managementItemToNews(item = {}) {
     const text = item.text || item.description || "";
     const date = formatStoredNewsDate(item.date);
@@ -301,7 +311,9 @@
       return {
         ...item,
         type: item.type || fallback.type || "Comunicazione",
-        image: item.imageRemoved ? "" : item.image || fallback.image || "",
+        image: item.imageRemoved
+          ? ""
+          : normalizeManagedNewsImage(item.image || fallback.image || ""),
       };
     });
     const managedKeys = new Set(

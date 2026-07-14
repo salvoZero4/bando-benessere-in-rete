@@ -44,7 +44,7 @@ window.siteContent.news = {
       type: "Territorio",
       title: "Belvedere, cultura e memoria",
       image: {
-        src: "assets/foto/news-territorio-cultura.jpg",
+        src: "assets/foto/news-territorio-cultura.jpeg",
         alt: "Paesaggio e cultura di Altavilla Milicia",
       },
       description:

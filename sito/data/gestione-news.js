@@ -36,8 +36,8 @@ window.siteContent.management = {
       "type": "Consulta dello Sport",
       "date": "2026-06-10",
       "status": "Pubblicata",
-      "imageName": "news-benessere-comune.jpg",
-      "image": "assets/foto/news-benessere-comune.jpg"
+      "imageName": "news-benessere-comune.jpeg",
+      "image": "assets/foto/news-benessere-comune.jpeg"
     },
     {
       "id": "news-002",
@@ -56,8 +56,8 @@ window.siteContent.management = {
       "type": "Territorio",
       "date": "2026-06-14",
       "status": "Pubblicata",
-      "imageName": "territorio-cultura.jpg",
-      "image": "assets/foto/news-territorio-cultura.jpg"
+      "imageName": "news-territorio-cultura.jpeg",
+      "image": "assets/foto/news-territorio-cultura.jpeg"
     }
   ]
 };
